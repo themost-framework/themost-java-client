@@ -1,7 +1,7 @@
 package org.most.client;
 
-import java.io.DataOutput;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -109,7 +109,7 @@ public class ClientDataService {
     /**
      * @return
      */
-    protected ClientDataResultSet execute(ServiceMethodName method, String relativeUri, HashMap<String,Object> query, Object data) throws URISyntaxException {
+    private Object execute(ServiceMethod method, String relativeUri, HashMap<String,Object> query, Object data) throws URISyntaxException, IOException {
         HttpRequestBase request;
         URI testUri = URI.create(relativeUri);
         if (testUri.isAbsolute()) {
@@ -163,118 +163,74 @@ public class ClientDataService {
         }
 
         HttpClient client = new DefaultHttpClient();
-        try {
-            if (request instanceof HttpEntityEnclosingRequestBase && data != null) {
-                StringEntity dataEntity;
-                if (data instanceof DataObject) {
-                    dataEntity =new StringEntity(JSONSerializer.toJSON(((DataObject)data).toJSONObject()).toString());
+
+        if (request instanceof HttpEntityEnclosingRequestBase && data != null) {
+            StringEntity dataEntity;
+            if (data instanceof DataObject) {
+                dataEntity =new StringEntity(JSONSerializer.toJSON(((DataObject)data).toJSON()).toString());
+            }
+            else {
+                dataEntity =new StringEntity(JSONSerializer.toJSON(data).toString());
+            }
+            ((HttpEntityEnclosingRequestBase)request).setEntity(dataEntity);
+        }
+        //execute response
+        HttpResponse response = client.execute(request);
+        if (response.getStatusLine().getStatusCode()==200) {
+            String body =EntityUtils.toString(response.getEntity(),"UTF-8");
+            Object result;
+            if (body.length()==0) {
+                return null;
+            }
+            if (body.matches("^(\\s+|\\n+)?\\[.*\\](\\s+|\\n+)?$")) {
+                result = JSONArray.fromObject(body);
+            }
+            else {
+                result = JSONObject.fromObject(body);
+            }
+            if (result instanceof JSONArray) {
+                return DataObject.fromJSONArray((JSONArray)result);
+            }
+            else if (result instanceof JSONObject) {
+                JSONObject o = (JSONObject)result;
+                //check if result follows ClientDataResultSet structure
+                if (o.containsKey("total")
+                        && o.containsKey("records")) {
+                    ClientDataResultSet output = new ClientDataResultSet();
+                    output.total = o.optInt("total");
+                    if (o.containsKey("skip"))
+                        output.skip = o.optInt("skip");
+                    output.items = DataObject.fromJSONArray(o.optJSONArray("records"));
+                    return output;
                 }
                 else {
-                    dataEntity =new StringEntity(JSONSerializer.toJSON(data).toString());
+                    return DataObject.fromJSON(o);
                 }
-                ((HttpEntityEnclosingRequestBase)request).setEntity(dataEntity);
             }
-            //execute response
-            HttpResponse response = client.execute(request);
-            if (response.getStatusLine().getStatusCode()==200) {
-                String body =EntityUtils.toString(response.getEntity(),"UTF-8");
-                Object result = JSONObject.fromObject(body);
-                ClientDataResultSet output = new ClientDataResultSet();
-                if (result instanceof JSONArray) {
-                    output.records = JSONArrayToDataObject((JSONArray)result);
-                    output.total = output.records.length;
-                }
-                else if (result instanceof JSONObject) {
-                    JSONObject o = (JSONObject)result;
-                    if (o.containsKey("total") && o.containsKey("records")) {
-                        output.total = o.optInt("total");
-                        if (o.containsKey("skip"))
-                            output.skip = o.optInt("skip");
-                        output.records = JSONArrayToDataObject(o.optJSONArray("records"));
-                    }
-                    else {
-                        output.total = 1;
-                        output.records = new DataObject[] { JSONObjectToDataObject((JSONObject)result) };
-                    }
-                }
-                return output;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return null;
     }
 
-    private static DataObject[] JSONArrayToDataObject(JSONArray src) {
-        if (src == null) {
-            return new DataObject[0];
-        }
-        DataObject[] res = new DataObject[src.size()];
-        ListIterator iterator = src.listIterator();
-        int k = 0;
-        while (iterator.hasNext()) {
-            res[k] = JSONObjectToDataObject((JSONObject) iterator.next());
-            k += 1;
-        }
-        return res;
-    }
-
-    private static String DateTimeRegex ="^(\\d{4})-(0[1-9]|1[0-2])-(\\d{2})(\\s)(\\d{2}):(\\d{2}):(\\d{2}).(\\d{3})[-+](\\d{2}):(\\d{2})$";
-            //"^(\\d{4})(?:-?W(\\d+)(?:-?(\\d+)D?)?|(?:-(\\d+))?-(\\d+))(?:[T ](\\d+):(\\d+)(?::(\\d+)(?:\\.(\\d+))?)?)?(?:Z(-?\\d*))?$";
-
-    private static boolean isDate(Object value) {
-        if (value instanceof String) {
-            return ((String)value).matches(DateTimeRegex);
-        }
-        return false;
-    }
-
-    private static SimpleDateFormat ISODateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSXXX");
-
-
-    private static DataObject JSONObjectToDataObject(JSONObject src) {
-        DataObject res = new DataObject();
-        Iterator keyIterator = src.keySet().iterator();
-        String key;
-        Object value;
-        while (keyIterator.hasNext()) {
-            key = (String)keyIterator.next();
-            if (src.optJSONArray(key) != null) {
-                res.put(key, JSONArrayToDataObject((JSONArray) src.get(key)));
-            }
-            else if (src.optJSONObject(key) != null) {
-                res.put(key, JSONObjectToDataObject((JSONObject) src.get(key)));
-            }
-            else {
-                value = src.get(key);
-                if (isDate(value)) {
-                    try {
-                        res.put(key,ISODateFormatter.parse((String)value));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        res.put(key, value);
-                    }
-                }
-                else {
-                    res.put(key, value);
-                }
-            }
-        }
-        return res;
+    /**
+     * @return
+     */
+    public Object get(String relativeUri, HashMap<String, Object> query) throws URISyntaxException, IOException {
+        return this.execute(ServiceMethod.GET, relativeUri, query, null);
     }
 
     /**
      * @return
      */
-    protected ClientDataResultSet get(String relativeUri, HashMap<String, Object> query) throws URISyntaxException {
-        return this.execute(ServiceMethodName.GET, relativeUri, query, null);
+    public Object post(String relativeUri, HashMap<String, Object> query, Object data) throws URISyntaxException, IOException {
+        return this.execute(ServiceMethod.POST, relativeUri, query, data);
     }
 
     /**
      * @return
      */
-    protected ClientDataResultSet post(String relativeUri, HashMap<String, Object> query, Object data) throws URISyntaxException {
-        return this.execute(ServiceMethodName.POST, relativeUri, query, data);
+    public Object put(String relativeUri, HashMap<String, Object> query, Object data) throws URISyntaxException, IOException {
+        return this.execute(ServiceMethod.POST, relativeUri, query, data);
     }
 }
 

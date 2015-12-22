@@ -1,13 +1,17 @@
 package org.most.client;
 
 import net.sf.json.JSON;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.io.Writer;
 import java.security.InvalidKeyException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -52,13 +56,68 @@ public class DataObject extends HashMap<String,Object> implements JSON {
         return null;
     }
 
+    public int getInteger(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (Integer)value;
+        }
+        return 0;
+    }
+
+    public float getFloat(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (Float)value;
+        }
+        return 0;
+    }
+
+    public String getString(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (String)value;
+        }
+        return null;
+    }
+
+    public Date getDate(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (Date)value;
+        }
+        throw null;
+    }
+
+    public Boolean getBoolean(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (Boolean)value;
+        }
+        return false;
+    }
+
+
+    private static String DateTimeRegex ="^(\\d{4})-(0[1-9]|1[0-2])-(\\d{2})(\\s)(\\d{2}):(\\d{2}):(\\d{2}).(\\d{3})[-+](\\d{2}):(\\d{2})$";
+    //"^(\\d{4})(?:-?W(\\d+)(?:-?(\\d+)D?)?|(?:-(\\d+))?-(\\d+))(?:[T ](\\d+):(\\d+)(?::(\\d+)(?:\\.(\\d+))?)?)?(?:Z(-?\\d*))?$";
+
+    private static boolean isDate(Object value) {
+        if (value instanceof String) {
+            return ((String)value).matches(DateTimeRegex);
+        }
+        return false;
+    }
+
     private static SimpleDateFormat ISODateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSXXX");
 
-    public JSONObject toJSONObject() {
+    public JSONObject toJSON() {
+        return DataObject.toJSON(this);
+    }
+
+    public static JSONObject toJSON(DataObject src) {
         JSONObject output = new JSONObject();
-        this.forEach((k,v) -> {
+        src.forEach((k,v) -> {
             if (v instanceof DataObject) {
-                output.put(k, ((DataObject)v).toJSONObject());
+                output.put(k, DataObject.toJSON((DataObject)v));
             }
             else if (v instanceof Date) {
                 output.put(k, ISODateFormatter.format((Date)v));
@@ -70,6 +129,52 @@ public class DataObject extends HashMap<String,Object> implements JSON {
         return output;
     }
 
+    public static DataObject[] fromJSONArray(JSONArray src) {
+        if (src == null) {
+            return new DataObject[0];
+        }
+        DataObject[] res = new DataObject[src.size()];
+        ListIterator iterator = src.listIterator();
+        int k = 0;
+        while (iterator.hasNext()) {
+            res[k] = DataObject.fromJSON((JSONObject) iterator.next());
+            k += 1;
+            k += 1;
+        }
+        return res;
+    }
+
+    public static DataObject fromJSON(JSONObject src) {
+        DataObject res = new DataObject();
+        Iterator keyIterator = src.keySet().iterator();
+        String key;
+        Object value;
+        while (keyIterator.hasNext()) {
+            key = (String)keyIterator.next();
+            if (src.optJSONArray(key) != null) {
+                res.put(key, DataObject.fromJSONArray((JSONArray) src.get(key)));
+            }
+            else if (src.optJSONObject(key) != null) {
+                res.put(key, DataObject.fromJSON((JSONObject) src.get(key)));
+            }
+            else {
+                value = src.get(key);
+                if (isDate(value)) {
+                    try {
+                        res.put(key,ISODateFormatter.parse((String)value));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        res.put(key, value);
+                    }
+                }
+                else {
+                    res.put(key, value);
+                }
+            }
+        }
+        return res;
+    }
+
     @Override
     public boolean isArray() {
         return false;
@@ -77,16 +182,16 @@ public class DataObject extends HashMap<String,Object> implements JSON {
 
     @Override
     public String toString(int i) {
-        return this.toJSONObject().toString(i);
+        return this.toJSON().toString(i);
     }
 
     @Override
     public String toString(int i, int i1) {
-        return this.toJSONObject().toString(i, i1);
+        return this.toJSON().toString(i, i1);
     }
 
     @Override
     public Writer write(Writer writer) {
-        return this.toJSONObject().write(writer);
+        return this.toJSON().write(writer);
     }
 }

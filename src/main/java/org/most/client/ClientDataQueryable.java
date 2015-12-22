@@ -1,14 +1,9 @@
 package org.most.client;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-import net.sf.json.JSONString;
-import net.sf.json.util.JSONBuilder;
-
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.net.URISyntaxException;
-import java.security.InvalidParameterException;
+import java.util.HashMap;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -72,27 +67,29 @@ public class ClientDataQueryable {
         this.params_ = new ClientDataServiceParams();
     }
 
-    public ClientDataResultSet take(Integer n) throws URISyntaxException {
+    public ClientDataResultSet take(Integer n) throws URISyntaxException, IOException {
         this.params_.$top = n;
-        return this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
+        HashMap<String, Object> params = this.params_.toHashMap();
+        params.put("$inlinecount","true");
+        return (ClientDataResultSet)this.service_.get("/" + this.model_ + "/index.json", params);
     }
 
-    public DataObject first() throws URISyntaxException {
+    public DataObject first() throws URISyntaxException, IOException {
         this.params_.$top = 1;
         this.params_.$skip = 0;
-        ClientDataResultSet result = this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result.records != null) && (result.records.length>0)) {
-            return result.records[0];
+        DataObject[] result = (DataObject[])this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
+        if ((result != null) && (result.length>0)) {
+            return result[0];
         }
         return null;
     }
 
-    public Object value() throws URISyntaxException {
+    public Object value() throws URISyntaxException, IOException {
         this.params_.$top = 1;
         this.params_.$skip = 0;
-        ClientDataResultSet result = this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result.records != null) && (result.records.length>0)) {
-            DataObject result0 = result.records[0];
+        DataObject[] result = (DataObject[])this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
+        if ((result != null) && (result.length>0)) {
+            DataObject result0 = result[0];
             if (result0.values().isEmpty()) {
                 return null;
             }
@@ -106,6 +103,22 @@ public class ClientDataQueryable {
         return this;
     }
 
+    /**
+     * Prepares a custom filter
+     * @param s - A string that represents a filter expression
+     * @return
+     */
+    public ClientDataQueryable filter(String s) {
+        this.params_.$filter = s;
+        return this;
+    }
+
+    /**
+     * Prepares a comparison expression
+     * @param name - A string that represents the name of the field
+     *             that is going to be used as left operand of this expression
+     * @return
+     */
     public ClientDataQueryable where(String name) {
         this.expr_ = new ComparisonExpression();
         this.expr_.left = new FieldExpression(name);
@@ -370,12 +383,30 @@ public class ClientDataQueryable {
         return this;
     }
 
+    /**
+     * Initializes field selection and adds the specified field or array of fields
+     * @param name - A param array of strings which are going to be added in field selection.
+     * @return
+     */
     public ClientDataQueryable select(String... name) {
         this.params_.$select.clear();
         int i = 0;
         while (i < name.length) {
             this.params_.$select.add(new FieldExpression(name[i]));
             i++;
+        }
+        return this;
+    }
+
+    /**
+     * Sets an alias for the last field added in selection list.
+     * @param alias - A string that represents an alias for a selected field e.g. givenName as name
+     * @return
+     */
+    public ClientDataQueryable as(String alias) {
+        if (this.params_.$select.size()>0) {
+            FieldExpression expr = this.params_.$select.get(this.params_.$select.size()-1);
+            expr.as(alias);
         }
         return this;
     }
@@ -408,18 +439,28 @@ public class ClientDataQueryable {
         return this;
     }
 
-    public DataObject save(DataObject data) throws URISyntaxException {
-        ClientDataResultSet result = this.service_.post("/" + this.model_ + "/edit.json", null, data);
-        if ((result.records != null) && (result.records.length>0)) {
-            return result.records[0];
+    public DataObject save(DataObject data) throws URISyntaxException, IOException {
+        Object result = this.service_.post("/" + this.model_ + "/edit.json", null, data);
+        if (result instanceof DataObject) {
+            return (DataObject)result;
+        }
+        else if (result instanceof DataObject[]) {
+            if (((DataObject[])result).length>0) {
+                return ((DataObject[])result)[0];
+            }
         }
         return null;
     }
 
-    public DataObject remove(DataObject data) throws URISyntaxException {
-        ClientDataResultSet result = this.service_.post("/" + this.model_ + "/remove.json", null, data);
-        if ((result.records != null) && (result.records.length>0)) {
-            return result.records[0];
+    public Object remove(DataObject data) throws URISyntaxException, IOException {
+        Object result = this.service_.post("/" + this.model_ + "/remove.json", null, data);
+        if (result instanceof DataObject) {
+            return (DataObject)result;
+        }
+        else if (result instanceof DataObject[]) {
+            if (((DataObject[])result).length>0) {
+                return ((DataObject[])result)[0];
+            }
         }
         return null;
     }

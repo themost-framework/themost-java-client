@@ -42,5 +42,5 @@ public class ClientDataResultSet {
     /**
      * Gets or sets a collection of objects which contains the results of a query.
      */
-    public DataObject[] records;
+    public DataObject[] items;
 }

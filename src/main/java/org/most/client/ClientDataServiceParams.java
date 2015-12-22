@@ -44,13 +44,10 @@ public class ClientDataServiceParams {
     public Integer $skip;
     public final List<String> $orderby = new  ArrayList<String>();
     public final List<String> $groupby = new  ArrayList<String>();
-    public Boolean $inlinecount;
 
     public ClientDataServiceParams() {
         this.$top = 25;
         this.$skip = 0;
-        this.$inlinecount = true;
-
     }
 
     public HashMap<String,Object> toHashMap() {
@@ -72,9 +69,6 @@ public class ClientDataServiceParams {
         }
         if (this.$skip>=0) {
             res.put("$skip", this.$skip.toString());
-        }
-        if (this.$inlinecount != null) {
-            res.put("$inlinecount", this.$inlinecount.toString());
         }
         return res;
     }

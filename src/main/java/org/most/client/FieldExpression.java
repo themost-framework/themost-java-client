@@ -1,7 +1,6 @@
 package org.most.client;
 
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
