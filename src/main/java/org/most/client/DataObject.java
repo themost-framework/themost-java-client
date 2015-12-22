@@ -72,6 +72,14 @@ public class DataObject extends HashMap<String,Object> implements JSON {
         return 0;
     }
 
+    public double getDouble(String name) {
+        if (this.containsKey(name)) {
+            Object value = this.get(name);
+            return (Double)value;
+        }
+        return 0;
+    }
+
     public String getString(String name) {
         if (this.containsKey(name)) {
             Object value = this.get(name);

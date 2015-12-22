@@ -77,9 +77,9 @@ public class ClientDataQueryable {
     public DataObject first() throws URISyntaxException, IOException {
         this.params_.$top = 1;
         this.params_.$skip = 0;
-        DataObject[] result = (DataObject[])this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result != null) && (result.length>0)) {
-            return result[0];
+        DataObjectArray result = (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
+        if ((result != null) && (result.size()>0)) {
+            return result.get(0);
         }
         return null;
     }
@@ -87,9 +87,9 @@ public class ClientDataQueryable {
     public Object value() throws URISyntaxException, IOException {
         this.params_.$top = 1;
         this.params_.$skip = 0;
-        DataObject[] result = (DataObject[])this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result != null) && (result.length>0)) {
-            DataObject result0 = result[0];
+        DataObjectArray result = (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
+        if ((result != null) && (result.size()>0)) {
+            DataObject result0 = result.get(0);
             if (result0.values().isEmpty()) {
                 return null;
             }

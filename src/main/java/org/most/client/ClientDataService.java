@@ -12,6 +12,7 @@ import java.util.*;
 import net.sf.json.*;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -207,7 +208,9 @@ public class ClientDataService {
                 }
             }
         }
-
+        else {
+            throw new HttpResponseException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        }
         return null;
     }
 
