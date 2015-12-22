@@ -67,11 +67,11 @@ public class ClientDataQueryable {
         this.params_ = new ClientDataServiceParams();
     }
 
-    public ClientDataResultSet take(Integer n) throws URISyntaxException, IOException {
+    public DataObjectArray take(Integer n) throws URISyntaxException, IOException {
         this.params_.$top = n;
         HashMap<String, Object> params = this.params_.toHashMap();
         params.put("$inlinecount","true");
-        return (ClientDataResultSet)this.service_.get("/" + this.model_ + "/index.json", params);
+        return (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", params);
     }
 
     public DataObject first() throws URISyntaxException, IOException {

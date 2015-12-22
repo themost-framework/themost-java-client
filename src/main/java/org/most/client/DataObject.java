@@ -129,22 +129,14 @@ public class DataObject extends HashMap<String,Object> implements JSON {
         return output;
     }
 
-    public static DataObject[] fromJSONArray(JSONArray src) {
-        if (src == null) {
-            return new DataObject[0];
-        }
-        DataObject[] res = new DataObject[src.size()];
-        ListIterator iterator = src.listIterator();
-        int k = 0;
-        while (iterator.hasNext()) {
-            res[k] = DataObject.fromJSON((JSONObject) iterator.next());
-            k += 1;
-            k += 1;
-        }
-        return res;
+    public static DataObject create(JSONObject src) {
+        return DataObject.fromJSON(src);
     }
 
     public static DataObject fromJSON(JSONObject src) {
+        if (src == null) {
+            return null;
+        }
         DataObject res = new DataObject();
         Iterator keyIterator = src.keySet().iterator();
         String key;
@@ -152,7 +144,7 @@ public class DataObject extends HashMap<String,Object> implements JSON {
         while (keyIterator.hasNext()) {
             key = (String)keyIterator.next();
             if (src.optJSONArray(key) != null) {
-                res.put(key, DataObject.fromJSONArray((JSONArray) src.get(key)));
+                res.put(key, DataObjectArray.create((JSONArray) src.get(key)));
             }
             else if (src.optJSONObject(key) != null) {
                 res.put(key, DataObject.fromJSON((JSONObject) src.get(key)));

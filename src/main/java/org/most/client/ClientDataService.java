@@ -189,18 +189,17 @@ public class ClientDataService {
                 result = JSONObject.fromObject(body);
             }
             if (result instanceof JSONArray) {
-                return DataObject.fromJSONArray((JSONArray)result);
+                return DataObjectArray.create((JSONArray)result);
             }
             else if (result instanceof JSONObject) {
                 JSONObject o = (JSONObject)result;
                 //check if result follows ClientDataResultSet structure
                 if (o.containsKey("total")
                         && o.containsKey("records")) {
-                    ClientDataResultSet output = new ClientDataResultSet();
+                    DataObjectArray output = DataObjectArray.create(o.optJSONArray("records"));
                     output.total = o.optInt("total");
                     if (o.containsKey("skip"))
                         output.skip = o.optInt("skip");
-                    output.items = DataObject.fromJSONArray(o.optJSONArray("records"));
                     return output;
                 }
                 else {
