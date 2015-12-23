@@ -43,7 +43,7 @@ import java.util.ListIterator;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DataObject extends HashMap<String,Object> implements JSON {
+public class DataObject extends HashMap<String,Object> {
 
     public DataObject prop(String name) throws InvalidKeyException {
         if (this.containsKey(name)) {
@@ -173,25 +173,5 @@ public class DataObject extends HashMap<String,Object> implements JSON {
             }
         }
         return res;
-    }
-
-    @Override
-    public boolean isArray() {
-        return false;
-    }
-
-    @Override
-    public String toString(int i) {
-        return this.toJSON().toString(i);
-    }
-
-    @Override
-    public String toString(int i, int i1) {
-        return this.toJSON().toString(i, i1);
-    }
-
-    @Override
-    public Writer write(Writer writer) {
-        return this.toJSON().write(writer);
     }
 }
