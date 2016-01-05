@@ -4,6 +4,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ListIterator;
 
 /**
@@ -56,6 +57,15 @@ public class DataObjectArray extends ArrayList<DataObject> {
         while (iterator.hasNext()) {
             res.add(DataObject.fromJSON((JSONObject) iterator.next()));
             k += 1;
+        }
+        return res;
+    }
+
+    public JSONArray toJSON() {
+        JSONArray res = new JSONArray();
+        Iterator<DataObject> k = this.iterator();
+        while(k.hasNext()) {
+            res.add(k.next().toJSON());
         }
         return res;
     }

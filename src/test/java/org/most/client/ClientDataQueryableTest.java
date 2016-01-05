@@ -2,8 +2,6 @@ package org.most.client;
 
 import net.sf.json.JSONObject;
 import org.apache.http.HttpException;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -12,7 +10,7 @@ import java.util.Date;
  * Created by kbarbounakis on 12/20/15.
  */
 public class ClientDataQueryableTest {
-
+/*
     private static final String HOST_URI = "http://127.0.0.1:3000/";
     private static final String TEST_USERNAME = "alexis.rees@example.com";
     private static final String TEST_PASSWORD = "user";
@@ -75,5 +73,5 @@ public class ClientDataQueryableTest {
         System.out.println(String.format("Person Count=%d", (int)result));
 
     }
-
+*/
 }
