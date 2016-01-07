@@ -73,7 +73,7 @@ public class ComparisonExpression {
         }
         //5. string
         else if (value instanceof String) {
-            return String.format("'%s'", URLEncoder.encode((String)value));
+            return String.format("'%s'", (String)value);
         }
         //6. filter expression
         else if (value instanceof FilterExpression) {
@@ -81,7 +81,7 @@ public class ComparisonExpression {
         }
         //7. other
         else {
-            return String.format("'%s'", URLEncoder.encode(value.toString()));
+            return String.format("'%s'", value.toString());
         }
     }
 

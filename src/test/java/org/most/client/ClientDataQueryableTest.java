@@ -2,6 +2,7 @@ package org.most.client;
 
 import net.sf.json.JSONObject;
 import org.apache.http.HttpException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -10,8 +11,8 @@ import java.util.Date;
  * Created by kbarbounakis on 12/20/15.
  */
 public class ClientDataQueryableTest {
-/*
-    private static final String HOST_URI = "http://127.0.0.1:3000/";
+
+    private static final String HOST_URI = "http://127.0.0.1:3004/";
     private static final String TEST_USERNAME = "alexis.rees@example.com";
     private static final String TEST_PASSWORD = "user";
 
@@ -20,7 +21,6 @@ public class ClientDataQueryableTest {
         return svc.authenticate(TEST_USERNAME,TEST_PASSWORD).model(model);
     }
 
-    @Test
     public void testSimpleFilter() throws HttpException, IOException, URISyntaxException {
 
         ClientDataQueryable q = testGetQueryable("Person");
@@ -28,7 +28,6 @@ public class ClientDataQueryableTest {
         System.out.println(String.format("%s %s", result.getString("givenName"), result.getString("familyName")));
     }
 
-    @Test
     public void testSelect() throws HttpException, IOException, URISyntaxException {
 
         ClientDataQueryable q = testGetQueryable("Person");
@@ -37,7 +36,6 @@ public class ClientDataQueryableTest {
         System.out.println(String.format("(%d) %s %s", result.getInteger("id"), result.getString("givenName"), result.getString("familyName")));
     }
 
-    @Test
     public void testAndExpression() throws HttpException, IOException, URISyntaxException {
 
         ClientDataQueryable q = testGetQueryable("Product");
@@ -51,7 +49,6 @@ public class ClientDataQueryableTest {
         });
     }
 
-    @Test
     public void testOrExpression() throws HttpException, IOException, URISyntaxException {
 
         ClientDataQueryable q = testGetQueryable("Product");
@@ -65,13 +62,12 @@ public class ClientDataQueryableTest {
         });
     }
 
-    @Test
     public void testSelectCount() throws HttpException, IOException, URISyntaxException {
 
-        ClientDataQueryable q = testGetQueryable("Person");
-        Object result = q.select(FieldExpression.create("id").count().as("personCount")).value();
-        System.out.println(String.format("Person Count=%d", (int)result));
+        ClientDataQueryable q = testGetQueryable("User");
+        Object result = q.where("name").equal("admin@example.com").select("id").value();
+        System.out.println(String.format("User Count=%d", (int)result));
 
     }
-*/
+
 }
