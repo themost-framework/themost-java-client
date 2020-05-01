@@ -1,2 +1,2 @@
-# most-java-client
-Most Web Framework Java Client Library
+# themost-java-client
+Most Web Framework Client Library for Java
