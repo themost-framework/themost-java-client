@@ -1,4 +1,4 @@
-package org.most.client;
+package org.most.data.client;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -30,6 +30,16 @@ package org.most.client;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public enum LogicalOperator {
-    and , or
+public class FilterExpression {
+
+    private String expr_;
+
+    public FilterExpression(String s) {
+        this.expr_ = s;
+    }
+
+    public String toString() {
+        return this.expr_;
+    }
+
 }

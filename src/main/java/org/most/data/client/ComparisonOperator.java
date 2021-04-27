@@ -1,11 +1,4 @@
-package org.most.client;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ListIterator;
+package org.most.data.client;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -37,37 +30,6 @@ import java.util.ListIterator;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class DataObjectArray extends ArrayList<DataObject> {
-    /**
-     * Gets or sets the total number of objects satisfying the given query
-     */
-    public int total;
-    /**
-     * Gets or sets the number of skipped objects
-     */
-    public int skip;
-
-    public static DataObjectArray create(JSONArray src) {
-        DataObjectArray res = new DataObjectArray();
-        if (src == null) {
-            return res;
-        }
-        ListIterator iterator = src.listIterator();
-        int k = 0;
-        while (iterator.hasNext()) {
-            res.add(DataObject.fromJSON((JSONObject) iterator.next()));
-            k += 1;
-        }
-        return res;
-    }
-
-    public JSONArray toJSON() {
-        JSONArray res = new JSONArray();
-        Iterator<DataObject> k = this.iterator();
-        while(k.hasNext()) {
-            res.add(k.next().toJSON());
-        }
-        return res;
-    }
-
+public enum ComparisonOperator {
+    eq, ne, lt, le, ge, gt
 }

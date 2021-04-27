@@ -1,12 +1,9 @@
-package org.most.client;
+package org.most.data.client;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
-import java.text.*;
-import java.text.ParseException;
 import java.util.*;
 
 import net.sf.json.*;
@@ -56,10 +53,15 @@ public class ClientDataService {
 
     private String lang_;
     private String cookie_;
+    private final Map<String, String> _headers = new HashMap<String, String>();
 
     public ClientDataService(String host) throws URISyntaxException {
         //set host URI
         this.uri = new URI(host);
+    }
+
+    public Map<String,String> getHeaders() {
+        return this._headers;
     }
 
     public ClientDataService(URI host) {

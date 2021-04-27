@@ -1,4 +1,4 @@
-package org.most.client;
+package org.most.data.client;
 
 /**
  * Created by kbarbounakis on 12/21/15.

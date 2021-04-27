@@ -1,11 +1,4 @@
-package org.most.client;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+package org.most.data.client;
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
  Anthi Oikonomou anthioikonomou@gmail.com
@@ -36,41 +29,29 @@ import java.util.List;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class ClientDataServiceParams {
-
-    public final List<FieldExpression> $select = new ArrayList<FieldExpression>();
-    public String $filter;
-    public Integer $top;
-    public Integer $skip;
-    public final List<String> $orderby = new  ArrayList<String>();
-    public final List<String> $groupby = new  ArrayList<String>();
-
-    public ClientDataServiceParams() {
-        this.$top = 25;
-        this.$skip = 0;
-    }
-
-    public HashMap<String,Object> toHashMap() {
-        HashMap<String,Object> res = new HashMap<>();
-        if ($filter != null) {
-            res.put("$filter", this.$filter);
-        }
-        if (this.$select.size()>0) {
-            res.put("$select", StringUtils.join(this.$select, ","));
-        }
-        if (this.$orderby.size()>0) {
-            res.put("$orderby", StringUtils.join(this.$orderby, ","));
-        }
-        if (this.$groupby.size()>0) {
-            res.put("$groupby", StringUtils.join(this.$groupby, ","));
-        }
-        if (this.$top>0 || this.$top==-1) {
-            res.put("$top", this.$top.toString());
-        }
-        if (this.$skip>=0) {
-            res.put("$skip", this.$skip.toString());
-        }
-        return res;
-    }
-
+public enum ServiceMethod {
+    /**
+     * Represents PUT HTTP method
+     */
+    PUT,
+    /**
+     * Represents POST HTTP method
+     */
+    POST,
+    /**
+     * Represents GET HTTP method
+     */
+    GET,
+    /**
+     * Represents HEAD HTTP method
+     */
+    HEAD,
+    /**
+     * Represents OPTIONS HTTP method
+     */
+    OPTIONS,
+    /**
+     * Represents DELETE HTTP method
+     */
+    DELETE
 }

@@ -1,4 +1,11 @@
-package org.most.client;
+package org.most.data.client;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -30,16 +37,37 @@ package org.most.client;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class FilterExpression {
+public class DataObjectArray extends ArrayList<DataObject> {
+    /**
+     * Gets or sets the total number of objects satisfying the given query
+     */
+    public int total;
+    /**
+     * Gets or sets the number of skipped objects
+     */
+    public int skip;
 
-    private String expr_;
-
-    public FilterExpression(String s) {
-        this.expr_ = s;
+    public static DataObjectArray create(JSONArray src) {
+        DataObjectArray res = new DataObjectArray();
+        if (src == null) {
+            return res;
+        }
+        ListIterator iterator = src.listIterator();
+        int k = 0;
+        while (iterator.hasNext()) {
+            res.add(DataObject.fromJSON((JSONObject) iterator.next()));
+            k += 1;
+        }
+        return res;
     }
 
-    public String toString() {
-        return this.expr_;
+    public JSONArray toJSON() {
+        JSONArray res = new JSONArray();
+        Iterator<DataObject> k = this.iterator();
+        while(k.hasNext()) {
+            res.add(k.next().toJSON());
+        }
+        return res;
     }
 
 }
