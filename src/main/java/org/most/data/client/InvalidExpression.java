@@ -1,4 +1,5 @@
-package org.most.client;
+package org.most.data.client;
+
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
  Anthi Oikonomou anthioikonomou@gmail.com
@@ -29,29 +30,11 @@ package org.most.client;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public enum ServiceMethod {
-    /**
-     * Represents PUT HTTP method
-     */
-    PUT,
-    /**
-     * Represents POST HTTP method
-     */
-    POST,
-    /**
-     * Represents GET HTTP method
-     */
-    GET,
-    /**
-     * Represents HEAD HTTP method
-     */
-    HEAD,
-    /**
-     * Represents OPTIONS HTTP method
-     */
-    OPTIONS,
-    /**
-     * Represents DELETE HTTP method
-     */
-    DELETE
+public class InvalidExpression extends Exception {
+    public InvalidExpression() {
+        super("Expression is invalid");
+    }
+    public InvalidExpression(String message) {
+        super(message);
+    }
 }

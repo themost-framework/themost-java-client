@@ -1,11 +1,9 @@
-package org.most.client;
+package org.most.data.client;
 
-import net.sf.json.JSONObject;
 import org.apache.http.HttpException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Date;
 
 /**
  * Created by kbarbounakis on 12/20/15.

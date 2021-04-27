@@ -1,4 +1,10 @@
-package org.most.client;
+package org.most.data.client;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
@@ -30,11 +36,41 @@ package org.most.client;
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public class InvalidExpression extends Exception {
-    public InvalidExpression() {
-        super("Expression is invalid");
+public class ClientDataServiceParams {
+
+    public final List<FieldExpression> $select = new ArrayList<FieldExpression>();
+    public String $filter;
+    public Integer $top;
+    public Integer $skip;
+    public final List<String> $orderby = new  ArrayList<String>();
+    public final List<String> $groupby = new  ArrayList<String>();
+
+    public ClientDataServiceParams() {
+        this.$top = 25;
+        this.$skip = 0;
     }
-    public InvalidExpression(String message) {
-        super(message);
+
+    public HashMap<String,Object> toHashMap() {
+        HashMap<String,Object> res = new HashMap<>();
+        if ($filter != null) {
+            res.put("$filter", this.$filter);
+        }
+        if (this.$select.size()>0) {
+            res.put("$select", StringUtils.join(this.$select, ","));
+        }
+        if (this.$orderby.size()>0) {
+            res.put("$orderby", StringUtils.join(this.$orderby, ","));
+        }
+        if (this.$groupby.size()>0) {
+            res.put("$groupby", StringUtils.join(this.$groupby, ","));
+        }
+        if (this.$top>0 || this.$top==-1) {
+            res.put("$top", this.$top.toString());
+        }
+        if (this.$skip>=0) {
+            res.put("$skip", this.$skip.toString());
+        }
+        return res;
     }
+
 }

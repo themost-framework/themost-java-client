@@ -1,17 +1,14 @@
-package org.most.client;
+package org.most.data.client;
 
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import java.io.Writer;
 import java.security.InvalidKeyException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 /**
  Copyright (c) 2015, Kyriakos Barbounakis k.barbounakis@gmail.com
