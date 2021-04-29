@@ -19,7 +19,7 @@ public class EdmEntitySet {
 
     public String getResourcePath() {
         EdmAnnotation annotation = this.Annotations.stream().filter(edmAnnotation -> {
-           return EdmNamespace.TermResourcePath.equals(edmAnnotation.Term);
+           return EdmTerm.ResourcePath.equals(edmAnnotation.Term);
         }).findFirst().orElse(null);
         if (annotation != null) {
             return annotation.StringValue;
@@ -29,13 +29,13 @@ public class EdmEntitySet {
 
     public void setResourcePath(String value) {
         EdmAnnotation annotation = this.Annotations.stream().filter(edmAnnotation -> {
-            return EdmNamespace.TermResourcePath.equals(edmAnnotation.Term);
+            return EdmTerm.ResourcePath.equals(edmAnnotation.Term);
         }).findFirst().orElse(null);
         if (annotation != null) {
             annotation.StringValue = value;
         } else {
             this.Annotations.add(new EdmAnnotation() {{
-                Term = EdmNamespace.TermResourcePath;
+                Term = EdmTerm.ResourcePath;
                 StringValue = value;
             }});
         }
