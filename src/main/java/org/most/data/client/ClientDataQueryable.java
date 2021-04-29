@@ -386,7 +386,7 @@ public class ClientDataQueryable {
     /**
      * Initializes field selection and adds the specified field or array of fields
      * @param name - A param array of strings which are going to be added in field selection.
-     * @return
+     * @return ClientDataQueryable
      */
     public ClientDataQueryable select(String... name) {
         this.params_.$select.clear();

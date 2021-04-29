@@ -1,5 +1,8 @@
 package org.most.data.client;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class ClientDataModel {
 
     private final String _name;
@@ -9,8 +12,8 @@ public class ClientDataModel {
         this._name = name;
     }
 
-    public ClientDataModel(Class<?> objectRelationalClass) {
-        this._name = objectRelationalClass.getName();
+    public ClientDataModel(Class<?> type) {
+        this._name = type.getName();
     }
 
     /**
@@ -27,6 +30,24 @@ public class ClientDataModel {
      */
     public ClientDataQueryable asQueryable() {
         return new ClientDataQueryable(this.context.getService(), this.getName());
+    }
+
+    /**
+     *
+     * @param name String
+     * @return ClientDataQueryable
+     */
+    public ClientDataQueryable where(String name) {
+        return this.asQueryable().where(name);
+    }
+
+    /**
+     *
+     * @param name String
+     * @return ClientDataQueryable
+     */
+    public ClientDataQueryable select(String ... name) {
+        return this.asQueryable().select(name);
     }
 
 
