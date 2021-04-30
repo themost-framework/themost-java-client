@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
  */
 public class ClientDataQueryableTest {
 
-    private static final String HOST_URI = "http://127.0.0.1:3004/";
+    private static final String HOST_URI = "http://localhost/api/";
     private static final String TEST_USERNAME = "alexis.rees@example.com";
     private static final String TEST_PASSWORD = "user";
 

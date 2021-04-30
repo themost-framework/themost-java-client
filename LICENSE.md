@@ -1,5 +1,4 @@
-Copyright (c) 2014, Kyriakos Barbounakis k.barbounakis@gmail.com
-                    Anthi Oikonomou anthioikonomou@gmail.com
+Copyright (c) 2017-2021 THEMOST LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

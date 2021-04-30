@@ -1,5 +1,8 @@
 package org.themost.data.client;
 
+/**
+ *
+ */
 public class ClientDataModel {
 
     private final String _name;

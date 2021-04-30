@@ -1,0 +1,709 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="AccessLevelType" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Account" OpenType="true" BaseType="Thing" />
+            <EntityType Name="Thing" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="name" Type="Edm.Text" />
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="alternateName" Type="Edm.Text" />
+                <Property Name="id" Type="Edm.Counter" Nullable="false" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Action" OpenType="true" BaseType="Thing">
+                <Property Name="target" Type="EntryPoint" />
+                <Property Name="startTime" Type="Edm.DateTime" />
+                <Property Name="endTime" Type="Edm.DateTime" />
+                <NavigationProperty Name="result" Type="Thing" />
+                <NavigationProperty Name="actionStatus" Type="ActionStatusType" />
+                <NavigationProperty Name="agent" Type="Party" />
+                <NavigationProperty Name="instrument" Type="Thing" />
+                <NavigationProperty Name="participant" Type="Person" />
+                <NavigationProperty Name="object" Type="Thing" />
+                <NavigationProperty Name="error" Type="Thing" />
+                <NavigationProperty Name="location" Type="Place" />
+            </EntityType>
+            <EntityType Name="ActionStatusType" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Party" OpenType="true" BaseType="Thing">
+                <Property Name="taxID" Type="Edm.Text" />
+                <Property Name="email" Type="Edm.Text" />
+                <Property Name="telephone" Type="Edm.Text" />
+                <Property Name="vatID" Type="Edm.Text" />
+                <Property Name="faxNumber" Type="Edm.Text" />
+                <NavigationProperty Name="sponsor" Type="Party" />
+                <NavigationProperty Name="address" Type="PostalAddress" />
+                <NavigationProperty Name="awards" Type="Collection(Text)" />
+            </EntityType>
+            <EntityType Name="PostalAddress" OpenType="true" BaseType="ContactPoint">
+                <Property Name="postOfficeBoxNumber" Type="Edm.Text" />
+                <Property Name="streetAddress" Type="Edm.Text" />
+                <Property Name="addressRegion" Type="Edm.Text" />
+                <Property Name="postalCode" Type="Edm.Text" />
+                <Property Name="addressLocality" Type="Edm.Text" />
+                <NavigationProperty Name="addressCountry" Type="Country" />
+            </EntityType>
+            <EntityType Name="ContactPoint" OpenType="true" BaseType="StructuredValue">
+                <Property Name="faxNumber" Type="Edm.Text" />
+                <Property Name="telephone" Type="Edm.Text" />
+                <Property Name="email" Type="Edm.Text" />
+                <Property Name="contactType" Type="Edm.Text" />
+            </EntityType>
+            <EntityType Name="StructuredValue" OpenType="true" BaseType="Intangible" />
+            <EntityType Name="Intangible" OpenType="true" BaseType="Thing" />
+            <EntityType Name="Country" OpenType="true" BaseType="AdministrativeArea">
+                <Property Name="official" Type="Edm.Text" />
+                <Property Name="cca2" Type="Edm.Text" />
+                <Property Name="cca3" Type="Edm.Text" />
+                <Property Name="cioc" Type="Edm.Text" />
+                <Property Name="currency" Type="Edm.Text" />
+            </EntityType>
+            <EntityType Name="AdministrativeArea" OpenType="true" BaseType="Place" />
+            <EntityType Name="Place" OpenType="true" BaseType="Thing">
+                <Property Name="photo" Type="Photograph" />
+                <Property Name="globalLocationNumber" Type="Edm.Text" />
+                <Property Name="maximumAttendeeCapacity" Type="Edm.Integer" />
+                <Property Name="reviews" Type="Review" />
+                <Property Name="photos" Type="Photograph" />
+                <Property Name="map" Type="Edm.URL" />
+                <Property Name="branchCode" Type="Edm.Text" />
+                <Property Name="logo" Type="Edm.URL" />
+                <Property Name="telephone" Type="Edm.Text" />
+                <Property Name="publicAccess" Type="Edm.Boolean" />
+                <Property Name="faxNumber" Type="Edm.Text" />
+                <Property Name="isAccessibleForFree" Type="Edm.Boolean" />
+                <NavigationProperty Name="address" Type="PostalAddress" />
+                <NavigationProperty Name="geo" Type="GeoCoordinates" />
+                <NavigationProperty Name="containsPlace" Type="Collection(Place)" />
+                <NavigationProperty Name="containedIn" Type="Place" />
+            </EntityType>
+            <EntityType Name="GeoCoordinates" OpenType="true" BaseType="StructuredValue">
+                <Property Name="latitude" Type="Edm.Number" />
+                <Property Name="longitude" Type="Edm.Number" />
+                <Property Name="postalCode" Type="Edm.Text" />
+                <Property Name="elevation" Type="Edm.Text" />
+                <NavigationProperty Name="address" Type="PostalAddress" />
+                <NavigationProperty Name="addressCountry" Type="Country" />
+            </EntityType>
+            <EntityType Name="Person" OpenType="true" BaseType="Party">
+                <Property Name="jobTitle" Type="Edm.Text" />
+                <Property Name="birthDate" Type="Edm.DateTime" />
+                <Property Name="givenName" Type="Edm.Text" />
+                <Property Name="familyName" Type="Edm.Text" />
+                <Property Name="honorificPrefix" Type="Edm.Text" />
+                <Property Name="additionalName" Type="Edm.Text" />
+                <Property Name="honorificSuffix" Type="Edm.Text" />
+                <NavigationProperty Name="colleagues" Type="Collection(Person)" />
+                <NavigationProperty Name="workLocation" Type="Place" />
+                <NavigationProperty Name="children" Type="Collection(Person)" />
+                <NavigationProperty Name="birthPlace" Type="Place" />
+                <NavigationProperty Name="gender" Type="GenderType" />
+                <NavigationProperty Name="memberOf" Type="Organization" />
+                <NavigationProperty Name="alumniOf" Type="EducationalOrganization" />
+                <NavigationProperty Name="homeLocation" Type="ContactPoint" />
+                <NavigationProperty Name="siblings" Type="Collection(Person)" />
+                <NavigationProperty Name="affiliation" Type="Organization" />
+                <NavigationProperty Name="nationality" Type="Country" />
+                <NavigationProperty Name="follows" Type="Collection(Person)" />
+                <NavigationProperty Name="knows" Type="Collection(Person)" />
+                <NavigationProperty Name="worksFor" Type="Collection(Organization)" />
+                <NavigationProperty Name="user" Type="User" />
+                <NavigationProperty Name="orders" Type="Collection(Order)" />
+            </EntityType>
+            <EntityType Name="GenderType" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Organization" OpenType="true" BaseType="Party">
+                <Property Name="globalLocationNumber" Type="Edm.Text" />
+                <Property Name="dissolutionDate" Type="Edm.Date" />
+                <Property Name="logo" Type="Edm.URL" />
+                <Property Name="legalName" Type="Edm.Text" />
+                <Property Name="foundingDate" Type="Edm.Date" />
+                <NavigationProperty Name="subOrganization" Type="Organization" />
+                <NavigationProperty Name="memberOf" Type="Organization" />
+                <NavigationProperty Name="members" Type="Collection(Person)" />
+                <NavigationProperty Name="founders" Type="Collection(Person)" />
+                <NavigationProperty Name="employees" Type="Collection(Person)" />
+                <NavigationProperty Name="department" Type="Organization" />
+                <NavigationProperty Name="location" Type="Place" />
+            </EntityType>
+            <EntityType Name="EducationalOrganization" OpenType="true" BaseType="Organization">
+                <NavigationProperty Name="alumni" Type="Collection(Person)" />
+            </EntityType>
+            <EntityType Name="User" OpenType="true" BaseType="Account">
+                <Property Name="lockoutTime" Type="Edm.DateTime" />
+                <Property Name="logonCount" Type="Edm.Integer" />
+                <Property Name="enabled" Type="Edm.Boolean" />
+                <Property Name="lastLogon" Type="Edm.DateTime" />
+                <Property Name="userFlags" Type="Edm.Integer" />
+                <NavigationProperty Name="groups" Type="Collection(Group)" />
+            </EntityType>
+            <EntityType Name="Group" OpenType="true" BaseType="Account">
+                <NavigationProperty Name="members" Type="Collection(Account)" />
+            </EntityType>
+            <EntityType Name="Order" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Counter" Nullable="false" />
+                <Property Name="discount" Type="Edm.Number" />
+                <Property Name="discountCode" Type="Edm.Text" />
+                <Property Name="discountCurrency" Type="Edm.Text" />
+                <Property Name="isGift" Type="Edm.Boolean" />
+                <Property Name="orderDate" Type="Edm.DateTime" />
+                <Property Name="orderNumber" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="paymentDue" Type="Edm.DateTime" />
+                <Property Name="paymentUrl" Type="Edm.URL" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.Date">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.Date">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <NavigationProperty Name="acceptedOffer" Type="Offer" />
+                <NavigationProperty Name="billingAddress" Type="PostalAddress" />
+                <NavigationProperty Name="customer" Type="Person" Nullable="false">
+                    <Annotation Term="Org.OData.Core.V1.Immutable" Tag="true" />
+                </NavigationProperty>
+                <NavigationProperty Name="merchant" Type="Party" />
+                <NavigationProperty Name="orderedItem" Type="Product" Nullable="false" />
+                <NavigationProperty Name="orderStatus" Type="OrderStatusType" Nullable="false" />
+                <NavigationProperty Name="paymentMethod" Type="PaymentMethod" />
+            </EntityType>
+            <EntityType Name="Offer" OpenType="true" BaseType="Intangible">
+                <Property Name="price" Type="Edm.Number" />
+                <Property Name="validFrom" Type="Edm.DateTime" />
+                <Property Name="validThrough" Type="Edm.DateTime" />
+                <NavigationProperty Name="seller" Type="Person" />
+                <NavigationProperty Name="offeredBy" Type="Organization" />
+                <NavigationProperty Name="itemOffered" Type="Product" />
+            </EntityType>
+            <EntityType Name="Product" OpenType="true" BaseType="Thing">
+                <Property Name="category" Type="Edm.Text" />
+                <Property Name="discontinued" Type="Edm.Boolean" />
+                <Property Name="price" Type="Edm.Number" />
+                <Property Name="model" Type="Edm.Text" />
+                <Property Name="productID" Type="Edm.Text" />
+                <Property Name="releaseDate" Type="Edm.Date" />
+                <NavigationProperty Name="isRelatedTo" Type="Product" />
+                <NavigationProperty Name="isSimilarTo" Type="Product" />
+            </EntityType>
+            <EntityType Name="OrderStatusType" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="color" Type="Edm.Text" />
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="PaymentMethod" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="color" Type="Edm.Text" />
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Article" OpenType="true" BaseType="CreativeWork">
+                <Property Name="articleBody" Type="Edm.Text" />
+                <Property Name="articleSection" Type="Edm.Text" />
+                <Property Name="wordCount" Type="Edm.Integer" />
+            </EntityType>
+            <EntityType Name="CreativeWork" OpenType="true" BaseType="Thing">
+                <Property Name="alternativeHeadline" Type="Edm.Text" />
+                <Property Name="contentRating" Type="Edm.Text" />
+                <Property Name="copyrightYear" Type="Edm.Number" />
+                <Property Name="datePublished" Type="Edm.Date" />
+                <Property Name="discussionUrl" Type="Edm.URL" />
+                <Property Name="genre" Type="Edm.Text" />
+                <Property Name="headline" Type="Edm.Text" />
+                <Property Name="inLanguage" Type="Edm.Text" />
+                <Property Name="keywords" Type="Edm.Text" />
+                <Property Name="text" Type="Edm.Text" />
+                <Property Name="thumbnailUrl" Type="Edm.URL" />
+                <Property Name="version" Type="Edm.Text" />
+                <NavigationProperty Name="author" Type="Party" />
+                <NavigationProperty Name="citation" Type="Collection(CreativeWork)" />
+                <NavigationProperty Name="contentLocation" Type="Place" />
+                <NavigationProperty Name="contributor" Type="Party" />
+                <NavigationProperty Name="copyrightHolder" Type="Party" />
+                <NavigationProperty Name="editor" Type="Party" />
+                <NavigationProperty Name="publisher" Type="Party" />
+                <NavigationProperty Name="sourceOrganization" Type="Organization" />
+            </EntityType>
+            <EntityType Name="AudioObject" OpenType="true" BaseType="MediaObject" />
+            <EntityType Name="MediaObject" OpenType="true" BaseType="CreativeWork">
+                <Property Name="bitrate" Type="Edm.Text" />
+                <Property Name="contentSize" Type="Edm.Text" />
+                <Property Name="contentUrl" Type="Edm.URL" />
+                <Property Name="encodingFormat" Type="Edm.Text" />
+                <Property Name="expires" Type="Edm.Date" />
+                <Property Name="requiresSubscription" Type="Edm.Boolean" />
+                <Property Name="uploadDate" Type="Edm.Date" />
+                <NavigationProperty Name="associatedArticle" Type="Article" />
+            </EntityType>
+            <EntityType Name="CommunicateAction" OpenType="true" BaseType="InteractAction">
+                <NavigationProperty Name="recipient" Type="Party" />
+            </EntityType>
+            <EntityType Name="InteractAction" OpenType="true" BaseType="Action" />
+            <EntityType Name="Enumeration" OpenType="true" BaseType="Intangible" />
+            <EntityType Name="Event" OpenType="true" BaseType="Thing">
+                <Property Name="doorTime" Type="Edm.DateTime" />
+                <Property Name="startTime" Type="Edm.DateTime" />
+                <Property Name="endTime" Type="Edm.DateTime" />
+                <Property Name="previousStartDate" Type="Edm.Date" />
+                <NavigationProperty Name="attendees" Type="Collection(Party)" />
+                <NavigationProperty Name="eventStatus" Type="EventStatusType" />
+                <NavigationProperty Name="performers" Type="Collection(Party)" />
+                <NavigationProperty Name="subEvents" Type="Collection(Event)" />
+            </EntityType>
+            <EntityType Name="EventStatusType" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="FollowAction" OpenType="true" BaseType="InteractAction">
+                <NavigationProperty Name="followee" Type="Party" />
+            </EntityType>
+            <EntityType Name="ImageObject" OpenType="true" BaseType="MediaObject" />
+            <EntityType Name="JoinAction" OpenType="true" BaseType="InteractAction">
+                <NavigationProperty Name="event" Type="Event" />
+            </EntityType>
+            <EntityType Name="NavigationElement" OpenType="true" BaseType="Thing">
+                <Property Name="scope" Type="Edm.Text" />
+                <NavigationProperty Name="parent" Type="NavigationElement" />
+            </EntityType>
+            <EntityType Name="ProductCategory" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="description" Type="Edm.Text" Nullable="false" />
+            </EntityType>
+            <EntityType Name="RegisterAction" OpenType="true" BaseType="InteractAction" />
+            <EntityType Name="SubscribeAction" OpenType="true" BaseType="InteractAction" />
+            <EntityType Name="UserChat" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="commentTitle" Type="Edm.Text" />
+                <Property Name="commentText" Type="Edm.Text" />
+                <Property Name="commentTime" Type="Edm.DateTime" />
+                <Property Name="commentBy" Type="Edm.Integer" />
+                <NavigationProperty Name="replyTo" Type="UserChat" />
+            </EntityType>
+            <EntityType Name="UserComment" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Counter" Nullable="false" />
+                <Property Name="commentFlag" Type="Edm.Text" />
+                <Property Name="commentText" Type="Edm.Text" />
+                <Property Name="commentTime" Type="Edm.DateTime" />
+                <Property Name="replyToUrl" Type="Edm.URL" />
+                <NavigationProperty Name="discusses" Type="CreativeWork" />
+                <NavigationProperty Name="commentBy" Type="User" />
+            </EntityType>
+            <EntityType Name="UserInteraction" OpenType="true" BaseType="Event" />
+            <EntityType Name="UserMessage" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Counter" Nullable="false" />
+                <Property Name="subject" Type="Edm.Text" />
+                <Property Name="body" Type="Edm.Text" />
+                <Property Name="sender" Type="Edm.Text" />
+                <Property Name="recipient" Type="Edm.Text" />
+                <Property Name="cc" Type="Edm.Text" />
+                <Property Name="bcc" Type="Edm.Text" />
+                <Property Name="category" Type="Edm.Text" />
+                <Property Name="flag" Type="Edm.Text" />
+                <Property Name="dateSent" Type="Edm.DateTime" />
+                <Property Name="dateReceived" Type="Edm.DateTime" />
+                <Property Name="owner" Type="Edm.Integer" />
+                <Property Name="message" Type="Edm.Text" Nullable="false" />
+            </EntityType>
+            <EntityType Name="VisitorActivity" OpenType="true">
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="id" Type="Edm.Counter" Nullable="false" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="visitor" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.Date" />
+                <NavigationProperty Name="visitorCountry" Type="Country" />
+                <NavigationProperty Name="visitorBrowser" Type="VisitorBrowser" />
+            </EntityType>
+            <EntityType Name="VisitorBrowser" OpenType="true">
+                <Annotation Term="DataModel.OData.Core.V1.Implements" String="Enumeration" />
+                <Key>
+                    <PropertyRef Name="id" />
+                </Key>
+                <Property Name="color" Type="Edm.Text" />
+                <Property Name="name" Type="Edm.Text" Nullable="false" />
+                <Property Name="alternateName" Type="Edm.Text" Nullable="false" />
+                <Property Name="id" Type="Edm.Integer" Nullable="false" />
+                <Property Name="sameAs" Type="Edm.URL" />
+                <Property Name="url" Type="Edm.URL" />
+                <Property Name="image" Type="Edm.Text" />
+                <Property Name="additionalType" Type="Edm.Text">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="identifier" Type="Edm.Text" />
+                <Property Name="description" Type="Edm.Text" />
+                <Property Name="disambiguatingDescription" Type="Edm.Text" />
+                <Property Name="dateCreated" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="dateModified" Type="Edm.DateTime">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="createdBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+                <Property Name="modifiedBy" Type="Edm.Integer">
+                    <Annotation Term="Org.OData.Core.V1.Computed" Tag="true" />
+                </Property>
+            </EntityType>
+            <EntityType Name="Workspace" OpenType="true" BaseType="Thing" />
+            <Function Name="Me" IsBound="true">
+                <Parameter Name="bindingParameter" Type="Collection(Account)" Nullable="false" />
+                <ReturnType Type="User" Nullable="true" />
+            </Function>
+            <EntityContainer Name="DefaultContainer">
+                <EntitySet Name="AccessLevelTypes" EntityType="AccessLevelType">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="AccessLevelTypes" />
+                </EntitySet>
+                <EntitySet Name="Accounts" EntityType="Account">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Accounts" />
+                </EntitySet>
+                <EntitySet Name="Things" EntityType="Thing">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Things" />
+                </EntitySet>
+                <EntitySet Name="Actions" EntityType="Action">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Actions" />
+                </EntitySet>
+                <EntitySet Name="ActionStatusTypes" EntityType="ActionStatusType">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="ActionStatusTypes" />
+                </EntitySet>
+                <EntitySet Name="Parties" EntityType="Party">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Parties" />
+                </EntitySet>
+                <EntitySet Name="PostalAddresses" EntityType="PostalAddress">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="PostalAddresses" />
+                </EntitySet>
+                <EntitySet Name="ContactPoints" EntityType="ContactPoint">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="ContactPoints" />
+                </EntitySet>
+                <EntitySet Name="StructuredValues" EntityType="StructuredValue">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="StructuredValues" />
+                </EntitySet>
+                <EntitySet Name="Intangibles" EntityType="Intangible">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Intangibles" />
+                </EntitySet>
+                <EntitySet Name="Countries" EntityType="Country">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Countries" />
+                </EntitySet>
+                <EntitySet Name="AdministrativeAreas" EntityType="AdministrativeArea">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="AdministrativeAreas" />
+                </EntitySet>
+                <EntitySet Name="Places" EntityType="Place">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Places" />
+                </EntitySet>
+                <EntitySet Name="GeoCoordinates" EntityType="GeoCoordinates">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="GeoCoordinates" />
+                </EntitySet>
+                <EntitySet Name="People" EntityType="Person">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="People" />
+                </EntitySet>
+                <EntitySet Name="GenderTypes" EntityType="GenderType">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="GenderTypes" />
+                </EntitySet>
+                <EntitySet Name="Organizations" EntityType="Organization">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Organizations" />
+                </EntitySet>
+                <EntitySet Name="EducationalOrganizations" EntityType="EducationalOrganization">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="EducationalOrganizations" />
+                </EntitySet>
+                <EntitySet Name="Users" EntityType="User">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Users" />
+                </EntitySet>
+                <EntitySet Name="Groups" EntityType="Group">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Groups" />
+                </EntitySet>
+                <EntitySet Name="Orders" EntityType="Order">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Orders" />
+                </EntitySet>
+                <EntitySet Name="Offers" EntityType="Offer">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Offers" />
+                </EntitySet>
+                <EntitySet Name="Products" EntityType="Product">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Products" />
+                </EntitySet>
+                <EntitySet Name="OrderStatusTypes" EntityType="OrderStatusType">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="OrderStatusTypes" />
+                </EntitySet>
+                <EntitySet Name="PaymentMethods" EntityType="PaymentMethod">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="PaymentMethods" />
+                </EntitySet>
+                <EntitySet Name="Articles" EntityType="Article">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Articles" />
+                </EntitySet>
+                <EntitySet Name="CreativeWorks" EntityType="CreativeWork">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="CreativeWorks" />
+                </EntitySet>
+                <EntitySet Name="AudioObjects" EntityType="AudioObject">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="AudioObjects" />
+                </EntitySet>
+                <EntitySet Name="MediaObjects" EntityType="MediaObject">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="MediaObjects" />
+                </EntitySet>
+                <EntitySet Name="CommunicateActions" EntityType="CommunicateAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="CommunicateActions" />
+                </EntitySet>
+                <EntitySet Name="InteractActions" EntityType="InteractAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="InteractActions" />
+                </EntitySet>
+                <EntitySet Name="Events" EntityType="Event">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Events" />
+                </EntitySet>
+                <EntitySet Name="EventStatusTypes" EntityType="EventStatusType">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="EventStatusTypes" />
+                </EntitySet>
+                <EntitySet Name="FollowActions" EntityType="FollowAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="FollowActions" />
+                </EntitySet>
+                <EntitySet Name="ImageObjects" EntityType="ImageObject">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="ImageObjects" />
+                </EntitySet>
+                <EntitySet Name="JoinActions" EntityType="JoinAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="JoinActions" />
+                </EntitySet>
+                <EntitySet Name="NavigationElements" EntityType="NavigationElement">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="NavigationElements" />
+                </EntitySet>
+                <EntitySet Name="ProductCategories" EntityType="ProductCategory">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="ProductCategories" />
+                </EntitySet>
+                <EntitySet Name="RegisterActions" EntityType="RegisterAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="RegisterActions" />
+                </EntitySet>
+                <EntitySet Name="SubscribeActions" EntityType="SubscribeAction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="SubscribeActions" />
+                </EntitySet>
+                <EntitySet Name="UserChats" EntityType="UserChat">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="UserChats" />
+                </EntitySet>
+                <EntitySet Name="UserComments" EntityType="UserComment">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="UserComments" />
+                </EntitySet>
+                <EntitySet Name="UserInteractions" EntityType="UserInteraction">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="UserInteractions" />
+                </EntitySet>
+                <EntitySet Name="UserMessages" EntityType="UserMessage">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="UserMessages" />
+                </EntitySet>
+                <EntitySet Name="VisitorActivities" EntityType="VisitorActivity">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="VisitorActivities" />
+                </EntitySet>
+                <EntitySet Name="VisitorBrowsers" EntityType="VisitorBrowser">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="VisitorBrowsers" />
+                </EntitySet>
+                <EntitySet Name="Workspaces" EntityType="Workspace">
+                    <Annotation Term="Org.OData.Core.V1.ResourcePath" String="Workspaces" />
+                </EntitySet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
