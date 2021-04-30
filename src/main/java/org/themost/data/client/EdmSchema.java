@@ -9,6 +9,13 @@ import java.util.List;
 
 @JacksonXmlRootElement(localName = "Schema", namespace = EdmNamespace.DefaultNamespace)
 public class EdmSchema {
+
+    @JacksonXmlProperty(isAttribute=true)
+    public String Namespace;
+
+    @JacksonXmlProperty(isAttribute=true)
+    public String Alias;
+
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
     public List<EdmEntityType> EntityType = new ArrayList<EdmEntityType>();

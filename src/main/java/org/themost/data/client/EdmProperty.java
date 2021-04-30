@@ -16,6 +16,6 @@ public class EdmProperty {
     @JacksonXmlProperty(isAttribute=true)
     public Boolean Nullable = false;
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
+    @JacksonXmlProperty(localName = "Annotation", namespace = EdmNamespace.DefaultNamespace)
     public List<EdmAnnotation> Annotations = new ArrayList<EdmAnnotation>();
 }

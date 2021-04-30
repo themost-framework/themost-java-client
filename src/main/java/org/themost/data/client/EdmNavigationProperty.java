@@ -13,7 +13,9 @@ public class EdmNavigationProperty {
     public String Name;
     @JacksonXmlProperty(isAttribute=true)
     public String Type;
+    @JacksonXmlProperty(isAttribute=true)
+    public Boolean Nullable = true;
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
+    @JacksonXmlProperty(localName = "Annotation", namespace = EdmNamespace.DefaultNamespace)
     public List<EdmAnnotation> Annotations = new ArrayList<EdmAnnotation>();
 }

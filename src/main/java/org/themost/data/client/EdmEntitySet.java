@@ -14,7 +14,7 @@ public class EdmEntitySet {
     @JacksonXmlProperty(isAttribute=true)
     public String EntityType;
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
+    @JacksonXmlProperty(localName = "Annotation", namespace = EdmNamespace.DefaultNamespace)
     public List<EdmAnnotation> Annotations = new ArrayList<EdmAnnotation>();
 
     public String getResourcePath() {

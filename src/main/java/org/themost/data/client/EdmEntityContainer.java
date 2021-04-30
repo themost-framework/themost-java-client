@@ -12,4 +12,6 @@ public class EdmEntityContainer {
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
     public List<EdmEntitySet> EntitySet = new ArrayList<EdmEntitySet>();
+    @JacksonXmlProperty(isAttribute=true)
+    public String Name;
 }
