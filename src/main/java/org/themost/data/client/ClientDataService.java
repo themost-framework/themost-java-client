@@ -5,6 +5,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.json.*;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -12,7 +14,9 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 /**
@@ -22,8 +26,6 @@ public class ClientDataService {
 
     public URI uri;
 
-    private String lang_;
-    private String cookie_;
     private final Map<String, String> _headers = new HashMap<String, String>();
 
     public ClientDataService(String host) throws URISyntaxException {
@@ -35,177 +37,94 @@ public class ClientDataService {
         return this._headers;
     }
 
+    public ClientDataService setHeader(String header, String value) {
+        this._headers.put(header, value);
+        return this;
+    }
+
     public ClientDataService(URI host) {
         //set host URI
         this.uri = host;
     }
 
-    public ClientDataService language(String lang) {
-        this.lang_ = lang;
-        return this;
-    }
-
     public ClientDataQueryable model(String model) {
         return new ClientDataQueryable(this, model);
     }
-
-    public ClientDataService authenticate(String cookie) {
-        this.cookie_ = cookie;
-        return this;
-    }
-
-    public ClientDataService authenticate(String username, String password) throws IOException, HttpException {
-        HttpRequestBase request = new HttpGet(this.uri);
-        request.addHeader("Authorization","Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes())));
-        HttpClient client = new DefaultHttpClient();
-        try {
-            //execute response
-            HttpResponse response = client.execute(request);
-            if (response.getStatusLine().getStatusCode()==200) {
-                Header[] headers = response.getAllHeaders();
-                for (int i = 0; i < headers.length; i++) {
-                    if (headers[i].getName().equals("Set-Cookie")) {
-                        this.cookie_ = headers[i].getValue();
-                        return this;
-                    }
-                }
-                this.cookie_ = null;
-                return this;
-            }
-            else {
-                throw new HttpException("An error occured");
-            }
-        } catch (IOException e) {
-            throw e;
-        }
-    }
-
     /**
-     * @return
+     * @return ClientDataQueryable
      */
-    private Object execute(ServiceMethod method, String relativeUri, HashMap<String,Object> query, Object data) throws URISyntaxException, IOException {
+    public Object execute(DataServiceExecuteOptions options) throws IOException {
         HttpRequestBase request;
-        URI testUri = URI.create(relativeUri);
-        if (testUri.isAbsolute()) {
-            throw new InvalidParameterException("The execution url is not valid.");
-        }
-        URI resolve = this.uri.resolve(relativeUri);
-        URIBuilder builder = new URIBuilder(resolve);
-
-        if (query != null && query.size()>0) {
-            //enumerate data
-            query.forEach((k,v) -> {
-                builder.setParameter(k,v.toString());
-            });
-            //set request parameters
-        }
-        resolve = builder.build();
-
-        switch (method) {
-            case PUT:
-                request = new HttpPut(resolve);
+        String url = this.uri.resolve(options.url).toString();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        switch (options.method.toUpperCase(Locale.ROOT)) {
+            case "PUT":
+                request = new HttpPut(url);
                 break;
-            case POST:
-                request = new HttpPost(resolve);
+            case "POST":
+                request = new HttpPost(url);
                 break;
-            case GET:
-                request = new HttpGet(resolve);
+            case "HEAD":
+                request = new HttpHead(url);
                 break;
-            case HEAD:
-                request = new HttpHead(resolve);
+            case "OPTIONS":
+                request = new HttpOptions(url);
                 break;
-            case OPTIONS:
-                request = new HttpOptions(resolve);
-                break;
-            case DELETE:
-                request = new HttpDelete(resolve);
+            case "DELETE":
+                request = new HttpDelete(url);
                 break;
             default:
-                request = new HttpGet(resolve);
+                request = new HttpGet(url);
                 break;
         }
-
-        //set content type to application/json
-        request.addHeader("Content-Type","application/json");
-        //set accept language (if any)
-        if (this.lang_ != null) {
-            request.addHeader("Accept-Language",this.lang_);
+        Map<String, String> serviceHeaders = this.getHeaders();
+        serviceHeaders.keySet().forEach(header -> {
+            request.setHeader(header, serviceHeaders.get(header));
+        });
+        if (options.headers != null) {
+            options.headers.keySet().forEach(header -> {
+                request.setHeader(header, options.headers.get(header));
+            });
         }
-        //set cookie (if any)
-        if (this.cookie_ != null) {
-            request.addHeader("Cookie",this.cookie_);
+        CloseableHttpResponse response = httpClient.execute(request);
+        StatusLine statusLine = response.getStatusLine();
+        if (statusLine.getStatusCode() != 200) {
+            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
         }
-
-        HttpClient client = new DefaultHttpClient();
-
-        if (request instanceof HttpEntityEnclosingRequestBase && data != null) {
-            StringEntity dataEntity;
-            if (data instanceof DataObject) {
-                dataEntity =new StringEntity(JSONSerializer.toJSON(((DataObject)data).toJSON()).toString());
-            }
-            else {
-                dataEntity =new StringEntity(JSONSerializer.toJSON(data).toString());
-            }
-            ((HttpEntityEnclosingRequestBase)request).setEntity(dataEntity);
+        // no content
+        if (statusLine.getStatusCode() != 204) {
+            return null;
         }
-        //execute response
-        HttpResponse response = client.execute(request);
-        if (response.getStatusLine().getStatusCode()==200) {
-            String body =EntityUtils.toString(response.getEntity(),"UTF-8");
-            Object result;
-            if (body.length()==0) {
-                return null;
-            }
-            if (body.matches("^(\\s+|\\n+)?\\[.*\\](\\s+|\\n+)?$")) {
-                result = JSONArray.fromObject(body);
-            }
-            else {
-                result = JSONObject.fromObject(body);
-            }
-            if (result instanceof JSONArray) {
-                return DataObjectArray.create((JSONArray)result);
-            }
-            else if (result instanceof JSONObject) {
-                JSONObject o = (JSONObject)result;
-                //check if result follows ClientDataResultSet structure
-                if (o.containsKey("total")
-                        && o.containsKey("records")) {
-                    DataObjectArray output = DataObjectArray.create(o.optJSONArray("records"));
-                    output.total = o.optInt("total");
-                    if (o.containsKey("skip"))
-                        output.skip = o.optInt("skip");
-                    return output;
-                }
-                else {
-                    return DataObject.fromJSON(o);
-                }
-            }
-        }
-        else {
-            throw new HttpResponseException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
-        }
-        return null;
+        // get body
+        HttpEntity bodyEntity = response.getEntity();
+        String body = EntityUtils.toString(bodyEntity);
+        response.close();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readTree(body);
     }
 
     /**
      * @return
      */
-    public Object get(String relativeUri, HashMap<String, Object> query) throws URISyntaxException, IOException {
-        return this.execute(ServiceMethod.GET, relativeUri, query, null);
+    public Object get(DataServiceExecuteOptions options) throws URISyntaxException, IOException {
+        options.method = "GET";
+        return this.execute(options);
     }
 
     /**
      * @return
      */
-    public Object post(String relativeUri, HashMap<String, Object> query, Object data) throws URISyntaxException, IOException {
-        return this.execute(ServiceMethod.POST, relativeUri, query, data);
+    public Object post(DataServiceExecuteOptions options) throws URISyntaxException, IOException {
+        options.method = "POST";
+        return this.execute(options);
     }
 
     /**
      * @return
      */
-    public Object put(String relativeUri, HashMap<String, Object> query, Object data) throws URISyntaxException, IOException {
-        return this.execute(ServiceMethod.POST, relativeUri, query, data);
+    public Object put(DataServiceExecuteOptions options) throws URISyntaxException, IOException {
+        options.method = "PUT";
+        return this.execute(options);
     }
 }
 

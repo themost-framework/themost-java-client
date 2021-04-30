@@ -1,5 +1,8 @@
 package org.themost.data.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import net.sf.json.util.JSONTokener;
+
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.net.URISyntaxException;
@@ -10,9 +13,9 @@ import java.util.HashMap;
  */
 public class ClientDataQueryable {
 
-    private ClientDataService service_;
-    private String model_;
-    private ClientDataServiceParams params_;
+    private final ClientDataService _service;
+    private final String _model;
+    private final ClientDataServiceParams _params;
 
     private ComparisonExpression expr_ = null;
 
@@ -23,11 +26,11 @@ public class ClientDataQueryable {
         if (this.expr_ == null) {
             return;
         }
-        if (this.params_.$filter == null) {
-            this.params_.$filter = this.expr_.toString();
+        if (this._params.$filter == null) {
+            this._params.$filter = this.expr_.toString();
         }
         else {
-            this.params_.$filter = "(" + this.params_.$filter + ")" +
+            this._params.$filter = "(" + this._params.$filter + ")" +
                     " " + this.lop_.toString() + " " +
                     "(" + this.expr_.toString() + ")";
         }
@@ -35,44 +38,52 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable(ClientDataService service, String model) {
-        this.service_ = service;
-        this.model_ = model;
-        this.params_ = new ClientDataServiceParams();
+        this._service = service;
+        this._model = model;
+        this._params = new ClientDataServiceParams();
     }
 
-    public DataObjectArray take(Integer n) throws URISyntaxException, IOException {
-        this.params_.$top = n;
-        HashMap<String, Object> params = this.params_.toHashMap();
-        params.put("$inlinecount","true");
-        return (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", params);
+    public ClientDataQueryable take(Integer n) {
+        this._params.$top = n;
+        return this;
     }
 
-    public DataObject first() throws URISyntaxException, IOException {
-        this.params_.$top = 1;
-        this.params_.$skip = 0;
-        DataObjectArray result = (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result != null) && (result.size()>0)) {
-            return result.get(0);
+    public Object getItem() throws URISyntaxException, IOException {
+        this._params.$top = 1;
+        this._params.$skip = 0;
+        HashMap<String, Object> queryParams = this._params.toHashMap();
+        String relativeUrl = this._model;
+        JsonNode node = (JsonNode)this._service.get(
+                new DataServiceExecuteOptions() {{
+                    method = "GET";
+                    url = relativeUrl;
+                    query = queryParams;
+                }}
+        );
+        if (node == null) {
+            return null;
         }
-        return null;
+        return node.get(0);
     }
 
-    public Object value() throws URISyntaxException, IOException {
-        this.params_.$top = 1;
-        this.params_.$skip = 0;
-        DataObjectArray result = (DataObjectArray)this.service_.get("/" + this.model_ + "/index.json", this.params_.toHashMap());
-        if ((result != null) && (result.size()>0)) {
-            DataObject result0 = result.get(0);
-            if (result0.values().isEmpty()) {
-                return null;
-            }
-            return result0.values().iterator().next();
+    public Object getItems() throws URISyntaxException, IOException {
+        HashMap<String, Object> queryParams = this._params.toHashMap();
+        String relativeUrl = this._model;
+        JsonNode node = (JsonNode)this._service.get(
+                new DataServiceExecuteOptions() {{
+                    method = "GET";
+                    url = relativeUrl;
+                    query = queryParams;
+                }}
+        );
+        if (node == null) {
+            return new Object[0];
         }
-        return null;
+        return node;
     }
 
     public ClientDataQueryable skip(Integer n) {
-        this.params_.$skip = n;
+        this._params.$skip = n;
         return this;
     }
 
@@ -82,7 +93,7 @@ public class ClientDataQueryable {
      * @return
      */
     public ClientDataQueryable filter(String s) {
-        this.params_.$filter = s;
+        this._params.$filter = s;
         return this;
     }
 
@@ -311,48 +322,48 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable groupBy(String name) {
-        this.params_.$groupby.add(name);
+        this._params.$groupby.add(name);
         return this;
     }
 
     public ClientDataQueryable groupBy(String[] name) {
         int i = 0;
         while (i < name.length) {
-            this.params_.$groupby.add(name[i]);
+            this._params.$groupby.add(name[i]);
             i++;
         }
         return this;
     }
 
     public ClientDataQueryable orderBy(String name) {
-        this.params_.$orderby.clear();
-        this.params_.$orderby.add(name);
+        this._params.$orderby.clear();
+        this._params.$orderby.add(name);
         return this;
     }
 
     public ClientDataQueryable orderBy(String[] name) {
-        this.params_.$orderby.clear();
+        this._params.$orderby.clear();
         int i = 0;
         while (i < name.length) {
-            this.params_.$orderby.add(name[i]);
+            this._params.$orderby.add(name[i]);
             i++;
         }
         return this;
     }
 
     public ClientDataQueryable thenBy(String name) {
-        this.params_.$orderby.add(name);
+        this._params.$orderby.add(name);
         return this;
     }
 
     public ClientDataQueryable orderByDescending(String name) {
-        this.params_.$orderby.clear();
-        this.params_.$orderby.add(name.concat(" desc"));
+        this._params.$orderby.clear();
+        this._params.$orderby.add(name.concat(" desc"));
         return this;
     }
 
     public ClientDataQueryable thenByDescending(String name) {
-        this.params_.$orderby.add(name.concat(" desc"));
+        this._params.$orderby.add(name.concat(" desc"));
         return this;
     }
 
@@ -362,10 +373,10 @@ public class ClientDataQueryable {
      * @return ClientDataQueryable
      */
     public ClientDataQueryable select(String... name) {
-        this.params_.$select.clear();
+        this._params.$select.clear();
         int i = 0;
         while (i < name.length) {
-            this.params_.$select.add(new FieldExpression(name[i]));
+            this._params.$select.add(new FieldExpression(name[i]));
             i++;
         }
         return this;
@@ -377,8 +388,8 @@ public class ClientDataQueryable {
      * @return
      */
     public ClientDataQueryable as(String alias) {
-        if (this.params_.$select.size()>0) {
-            FieldExpression expr = this.params_.$select.get(this.params_.$select.size()-1);
+        if (this._params.$select.size()>0) {
+            FieldExpression expr = this._params.$select.get(this._params.$select.size()-1);
             expr.as(alias);
         }
         return this;
@@ -387,17 +398,17 @@ public class ClientDataQueryable {
     public ClientDataQueryable alsoSelect(String... name) {
         int i = 0;
         while (i < name.length) {
-            this.params_.$select.add(new FieldExpression(name[i]));
+            this._params.$select.add(new FieldExpression(name[i]));
             i++;
         }
         return this;
     }
 
     public ClientDataQueryable select(FieldExpression... expr) {
-        this.params_.$select.clear();
+        this._params.$select.clear();
         int i = 0;
         while (i < expr.length) {
-            this.params_.$select.add(expr[i]);
+            this._params.$select.add(expr[i]);
             i++;
         }
         return this;
@@ -406,36 +417,32 @@ public class ClientDataQueryable {
     public ClientDataQueryable alsoSelect(FieldExpression... expr) {
         int i = 0;
         while (i < expr.length) {
-            this.params_.$select.add(expr[i]);
+            this._params.$select.add(expr[i]);
             i++;
         }
         return this;
     }
 
-    public DataObject save(DataObject data) throws URISyntaxException, IOException {
-        Object result = this.service_.post("/" + this.model_ + "/edit.json", null, data);
-        if (result instanceof DataObject) {
-            return (DataObject)result;
-        }
-        else if (result instanceof DataObject[]) {
-            if (((DataObject[])result).length>0) {
-                return ((DataObject[])result)[0];
-            }
-        }
-        return null;
+    public Object save(Object any) throws URISyntaxException, IOException {
+        JsonNode node;
+        node = (JsonNode)this._service.post(
+                new DataServiceExecuteOptions() {{
+                    url = ClientDataQueryable.this._model;
+                    data = any;
+                }}
+        );
+        return node;
     }
 
-    public Object remove(DataObject data) throws URISyntaxException, IOException {
-        Object result = this.service_.post("/" + this.model_ + "/remove.json", null, data);
-        if (result instanceof DataObject) {
-            return (DataObject)result;
-        }
-        else if (result instanceof DataObject[]) {
-            if (((DataObject[])result).length>0) {
-                return ((DataObject[])result)[0];
-            }
-        }
-        return null;
+    public Object remove() throws URISyntaxException, IOException {
+        JsonNode node;
+        node = (JsonNode) this._service.execute(
+                new DataServiceExecuteOptions() {{
+                    method = "DELETE";
+                    url = ClientDataQueryable.this._model;
+                }}
+        );
+        return node;
     }
 
 
