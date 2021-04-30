@@ -43,7 +43,9 @@ public class ClientDataContext {
      * @return ClientDataModel
      */
     public ClientDataModel model(String name) {
-        return new ClientDataModel(name);
+        ClientDataModel result = new ClientDataModel(name);
+        result.context = this;
+        return result;
     }
 
     /**

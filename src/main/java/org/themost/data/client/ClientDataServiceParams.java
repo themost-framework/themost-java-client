@@ -12,8 +12,9 @@ public class ClientDataServiceParams {
     public String $filter;
     public Integer $top;
     public Integer $skip;
+    public Boolean $count = false;
     public final List<String> $orderby = new  ArrayList<String>();
-    public final List<String> $groupby = new  ArrayList<String>();
+    public final List<FieldExpression> $groupby = new ArrayList<FieldExpression>();
 
     public ClientDataServiceParams() {
         this.$top = 25;
@@ -39,6 +40,9 @@ public class ClientDataServiceParams {
         }
         if (this.$skip>=0) {
             res.put("$skip", this.$skip.toString());
+        }
+        if (this.$count) {
+            res.put("$count", true);
         }
         return res;
     }
