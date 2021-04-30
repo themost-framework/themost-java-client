@@ -16,6 +16,9 @@ import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Map;
 
+/**
+ *
+ */
 public class ClientDataContext {
 
     private final ClientDataService _service;
