@@ -15,7 +15,7 @@ public class EdmEntityType {
     public String BaseType;
     @JacksonXmlProperty(isAttribute=true)
     public boolean OpenType;
-    @JacksonXmlProperty(localName = "ReturnType", namespace = EdmNamespace.DefaultNamespace)
+    @JacksonXmlProperty(localName = "Key", namespace = EdmNamespace.DefaultNamespace)
     public EdmKey Key;
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
@@ -24,6 +24,6 @@ public class EdmEntityType {
     @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
     public List<EdmNavigationProperty> NavigationProperty = new ArrayList<EdmNavigationProperty>();
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace)
+    @JacksonXmlProperty(namespace = EdmNamespace.DefaultNamespace, localName = "Annotation")
     public List<EdmAnnotation> Annotations = new ArrayList<EdmAnnotation>();
 }
