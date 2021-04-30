@@ -12,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EdmSchemaTest {
 
+    private static final String HOST_URI = "http://localhost:3000/api/";
+    private static final String AUTH_URI = "http://localhost:3000/auth/token";
+    private static final String TEST_USERNAME = "alexis.rees@example.com";
+    private static final String TEST_PASSWORD = "secret";
+
     @Test
     public void ShouldSerializeEdmAction() throws IOException {
         EdmAction action = new EdmAction() {{
@@ -65,12 +70,12 @@ public class EdmSchemaTest {
 
     @Test
     public void ShouldGetMetadata() throws IOException, URISyntaxException {
-        TestTokenResult result = TestUtils.getTestToken("http://localhost:3000/auth/token",
-                "alexis.rees@example.com",
-                "secret");
+        TestTokenResult result = TestUtils.getTestToken(AUTH_URI,
+                TEST_USERNAME,
+                TEST_PASSWORD);
         assertNotNull(result);
         assertNotNull(result.access_token);
-        ClientDataContext context = new ClientDataContext("http://localhost:3000/api/");
+        ClientDataContext context = new ClientDataContext(HOST_URI);
         context.setBearerAuthorization(result.access_token);
         EdmSchema schema = context.getMetadata();
         assertNotNull(schema);
