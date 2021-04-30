@@ -1,7 +1,8 @@
 package org.themost.data.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import net.sf.json.util.JSONTokener;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -52,27 +53,55 @@ public class ClientDataQueryable {
         this._params.$top = 1;
         this._params.$skip = 0;
         HashMap<String, Object> queryParams = this._params.toHashMap();
-        String relativeUrl = this._model;
         JsonNode node = (JsonNode)this._service.get(
                 new DataServiceExecuteOptions() {{
                     method = "GET";
-                    url = relativeUrl;
+                    url = ClientDataQueryable.this._model;
                     query = queryParams;
                 }}
         );
         if (node == null) {
             return null;
         }
-        return node.get(0);
+        if (node.has("value")) {
+            ArrayNode elements = (ArrayNode) node.get("value");
+            return elements.get(0);
+        }
+        if (node instanceof ObjectNode) {
+            return node;
+        }
+        throw new InvalidObjectException("Invalid response. Expected object.");
     }
 
     public Object getItems() throws URISyntaxException, IOException {
         HashMap<String, Object> queryParams = this._params.toHashMap();
-        String relativeUrl = this._model;
         JsonNode node = (JsonNode)this._service.get(
                 new DataServiceExecuteOptions() {{
                     method = "GET";
-                    url = relativeUrl;
+                    url = ClientDataQueryable.this._model;
+                    query = queryParams;
+                }}
+        );
+        if (node instanceof ArrayNode) {
+            return node;
+        }
+        // format response
+        if (node.has("value")) {
+            Object elements = node.get("value");
+            if (elements instanceof ArrayNode) {
+                return elements;
+            }
+        }
+        throw new InvalidObjectException("Invalid response. Expected an array.");
+    }
+
+    public Object getList() throws URISyntaxException, IOException {
+        this._params.$count = true;
+        HashMap<String, Object> queryParams = this._params.toHashMap();
+        JsonNode node = (JsonNode)this._service.get(
+                new DataServiceExecuteOptions() {{
+                    method = "GET";
+                    url = ClientDataQueryable.this._model;
                     query = queryParams;
                 }}
         );
@@ -321,15 +350,11 @@ public class ClientDataQueryable {
         return this.equal(value);
     }
 
-    public ClientDataQueryable groupBy(String name) {
-        this._params.$groupby.add(name);
-        return this;
-    }
-
-    public ClientDataQueryable groupBy(String[] name) {
+    public ClientDataQueryable groupBy(String ... name) {
+        this._params.$groupby.clear();
         int i = 0;
         while (i < name.length) {
-            this._params.$groupby.add(name[i]);
+            this._params.$groupby.add(new FieldExpression(name[i]));
             i++;
         }
         return this;
@@ -338,16 +363,6 @@ public class ClientDataQueryable {
     public ClientDataQueryable orderBy(String name) {
         this._params.$orderby.clear();
         this._params.$orderby.add(name);
-        return this;
-    }
-
-    public ClientDataQueryable orderBy(String[] name) {
-        this._params.$orderby.clear();
-        int i = 0;
-        while (i < name.length) {
-            this._params.$orderby.add(name[i]);
-            i++;
-        }
         return this;
     }
 
@@ -434,7 +449,7 @@ public class ClientDataQueryable {
         return node;
     }
 
-    public Object remove() throws URISyntaxException, IOException {
+    public Object remove() throws IOException, URISyntaxException {
         JsonNode node;
         node = (JsonNode) this._service.execute(
                 new DataServiceExecuteOptions() {{

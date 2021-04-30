@@ -6,7 +6,9 @@ import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import net.sf.json.*;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -53,28 +55,38 @@ public class ClientDataService {
     /**
      * @return ClientDataQueryable
      */
-    public Object execute(DataServiceExecuteOptions options) throws IOException {
+    public Object execute(DataServiceExecuteOptions options) throws IOException, URISyntaxException {
         HttpRequestBase request;
-        String url = this.uri.resolve(options.url).toString();
+        URI uri = this.uri.resolve(options.url);
         CloseableHttpClient httpClient = HttpClients.createDefault();
+        if (options.query != null && options.query.size() > 0) {
+            URIBuilder builder = new URIBuilder(uri);
+            for (String key : options.query.keySet()) {
+                Object value = options.query.get(key);
+                if (value != null) {
+                    builder.addParameter(key, String.valueOf(value));
+                }
+            }
+            uri = builder.build();
+        }
         switch (options.method.toUpperCase(Locale.ROOT)) {
             case "PUT":
-                request = new HttpPut(url);
+                request = new HttpPut(uri);
                 break;
             case "POST":
-                request = new HttpPost(url);
+                request = new HttpPost(uri);
                 break;
             case "HEAD":
-                request = new HttpHead(url);
+                request = new HttpHead(uri);
                 break;
             case "OPTIONS":
-                request = new HttpOptions(url);
+                request = new HttpOptions(uri);
                 break;
             case "DELETE":
-                request = new HttpDelete(url);
+                request = new HttpDelete(uri);
                 break;
             default:
-                request = new HttpGet(url);
+                request = new HttpGet(uri);
                 break;
         }
         Map<String, String> serviceHeaders = this.getHeaders();
@@ -92,7 +104,7 @@ public class ClientDataService {
             throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
         }
         // no content
-        if (statusLine.getStatusCode() != 204) {
+        if (statusLine.getStatusCode() == 204) {
             return null;
         }
         // get body
@@ -104,7 +116,7 @@ public class ClientDataService {
     }
 
     /**
-     * @return
+     * @return Object
      */
     public Object get(DataServiceExecuteOptions options) throws URISyntaxException, IOException {
         options.method = "GET";
