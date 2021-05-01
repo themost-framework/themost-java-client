@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -18,24 +19,24 @@ public class ClientDataQueryable {
     private final String _model;
     private final ClientDataServiceParams _params;
 
-    private ComparisonExpression expr_ = null;
+    private ComparisonExpression _expr = null;
 
-    private LogicalOperator lop_ = LogicalOperator.and;
+    private LogicalOperator _lop = LogicalOperator.and;
 
-    private void append_() {
+    private void _append() {
 
-        if (this.expr_ == null) {
+        if (this._expr == null) {
             return;
         }
         if (this._params.$filter == null) {
-            this._params.$filter = this.expr_.toString();
+            this._params.$filter = this._expr.toString();
         }
         else {
             this._params.$filter = "(" + this._params.$filter + ")" +
-                    " " + this.lop_.toString() + " " +
-                    "(" + this.expr_.toString() + ")";
+                    " " + this._lop.toString() + " " +
+                    "(" + this._expr.toString() + ")";
         }
-        this.expr_ = null;
+        this._expr = null;
     }
 
     public ClientDataQueryable(ClientDataService service, String model) {
@@ -119,7 +120,7 @@ public class ClientDataQueryable {
     /**
      * Prepares a custom filter
      * @param s - A string that represents a filter expression
-     * @return
+     * @return ClientDataQueryable
      */
     public ClientDataQueryable filter(String s) {
         this._params.$filter = s;
@@ -130,180 +131,180 @@ public class ClientDataQueryable {
      * Prepares a comparison expression
      * @param name - A string that represents the name of the field
      *             that is going to be used as left operand of this expression
-     * @return
+     * @return ClientDataQueryable
      */
     public ClientDataQueryable where(String name) {
-        this.expr_ = new ComparisonExpression();
-        this.expr_.left = new FieldExpression(name);
+        this._expr = new ComparisonExpression();
+        this._expr.left = new FieldExpression(name);
         return this;
     }
 
     public ClientDataQueryable getDay() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getDay();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getDay();
         }
         return this;
     }
 
     public ClientDataQueryable getMonth() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getMonth();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getMonth();
         }
         return this;
     }
 
     public ClientDataQueryable getYear() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getYear();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getYear();
         }
         return this;
     }
 
     public ClientDataQueryable getDate() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getDate();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getDate();
         }
         return this;
     }
 
     public ClientDataQueryable getMinutes() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getMinutes();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getMinutes();
         }
         return this;
     }
 
     public ClientDataQueryable getSeconds() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getSeconds();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getSeconds();
         }
         return this;
     }
 
     public ClientDataQueryable getHours() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.getHours();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.getHours();
         }
         return this;
     }
 
     public ClientDataQueryable indexOf(String s) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.indexOf(s);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.indexOf(s);
         }
         return this;
     }
 
     public ClientDataQueryable substring(int start) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.substring(start);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.substring(start);
         }
         return this;
     }
 
     public ClientDataQueryable substring(int start, int length) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.substring(start, length);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.substring(start, length);
         }
         return this;
     }
 
     public ClientDataQueryable startsWith(String s) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.startsWith(s);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.startsWith(s);
         }
         return this;
     }
 
     public ClientDataQueryable endsWith(String s) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.endsWith(s);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.endsWith(s);
         }
         return this;
     }
 
     public ClientDataQueryable contains(String s) {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.contains(s);
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.contains(s);
         }
         return this;
     }
 
     public ClientDataQueryable trim() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.trim();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.trim();
         }
         return this;
     }
 
     public ClientDataQueryable toLowerCase() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.toLowerCase();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.toLowerCase();
         }
         return this;
     }
 
     public ClientDataQueryable toUpperCase() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.toUpperCase();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.toUpperCase();
         }
         return this;
     }
 
     public ClientDataQueryable min() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.min();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.min();
         }
         return this;
     }
 
     public ClientDataQueryable max() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.max();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.max();
         }
         return this;
     }
 
     public ClientDataQueryable sum() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.sum();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.sum();
         }
         return this;
     }
 
     public ClientDataQueryable count() {
-        if ((this.expr_ != null) && (this.expr_.left != null)) {
-            this.expr_.left.count();
+        if ((this._expr != null) && (this._expr.left != null)) {
+            this._expr.left.count();
         }
         return this;
     }
 
     public ClientDataQueryable and(String name) {
-        this.expr_ = new ComparisonExpression();
-        this.expr_.left = new FieldExpression(name);
-        this.lop_ = LogicalOperator.and;
+        this._expr = new ComparisonExpression();
+        this._expr.left = new FieldExpression(name);
+        this._lop = LogicalOperator.and;
         return this;
     }
 
     public ClientDataQueryable or(String name) {
-        this.expr_ = new ComparisonExpression();
-        this.expr_.left = new FieldExpression(name);
-        this.lop_ = LogicalOperator.or;
+        this._expr = new ComparisonExpression();
+        this._expr.left = new FieldExpression(name);
+        this._lop = LogicalOperator.or;
         return this;
     }
 
-    private ClientDataQueryable comparison_(ComparisonOperator operator, Object value) throws InvalidObjectException {
-        if (this.expr_ == null) {
+    private ClientDataQueryable _compare(ComparisonOperator operator, Object value) throws InvalidObjectException {
+        if (this._expr == null) {
             throw new InvalidObjectException("The left operand of current expression is missing or is not yet implemented.");
         }
-        this.expr_.operator = operator;
-        this.expr_.right = value;
-        this.append_();
+        this._expr.operator = operator;
+        this._expr.right = value;
+        this._append();
         return this;
     }
 
     public ClientDataQueryable equal(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.eq,value);
+        return this._compare(ComparisonOperator.eq,value);
     }
 
     public ClientDataQueryable eq(Object value) throws InvalidObjectException {
@@ -311,15 +312,15 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable notEqual(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.ne,value);
+        return this._compare(ComparisonOperator.ne,value);
     }
 
     public ClientDataQueryable ne(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.ne,value);
+        return this._compare(ComparisonOperator.ne,value);
     }
 
     public ClientDataQueryable greaterThan(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.gt,value);
+        return this._compare(ComparisonOperator.gt,value);
     }
 
     public ClientDataQueryable gt(Object value) throws InvalidObjectException {
@@ -327,7 +328,24 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable greaterOrEqual(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.ge,value);
+        return this._compare(ComparisonOperator.ge,value);
+    }
+
+    public ClientDataQueryable between(Object value1, Object value2) throws InvalidObjectException {
+        String name = this._expr.left.name;
+        ClientDataQueryable q =new ClientDataQueryable(this._service, this._model)
+                .where(name).greaterOrEqual(value1)
+                .and(name).lowerOrEqual(value2);
+        if (this._params.$filter == null) {
+            this._params.$filter = String.format("(%s)", q._params.$filter);
+        }
+        else {
+            this._params.$filter = String.format("(%s) ",this._params.$filter) +
+                    this._lop.toString() +
+                    String.format(" (%s)", q._params.$filter);
+        }
+        this._expr = null;
+        return this;
     }
 
     public ClientDataQueryable ge(Object value) throws InvalidObjectException {
@@ -335,7 +353,7 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable lowerThan(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.lt,value);
+        return this._compare(ComparisonOperator.lt,value);
     }
 
     public ClientDataQueryable lt(Object value) throws InvalidObjectException {
@@ -343,7 +361,7 @@ public class ClientDataQueryable {
     }
 
     public ClientDataQueryable lowerOrEqual(Object value) throws InvalidObjectException {
-        return this.comparison_(ComparisonOperator.le,value);
+        return this._compare(ComparisonOperator.le,value);
     }
 
     public ClientDataQueryable le(Object value) throws InvalidObjectException {
@@ -397,10 +415,18 @@ public class ClientDataQueryable {
         return this;
     }
 
+    public ClientDataQueryable expand(String ... name) {
+        // clear
+        this._params.$expand.clear();
+        // add items
+        this._params.$expand.addAll(Arrays.asList(name));
+        return this;
+    }
+
     /**
      * Sets an alias for the last field added in selection list.
      * @param alias - A string that represents an alias for a selected field e.g. givenName as name
-     * @return
+     * @return ClientDataQueryable
      */
     public ClientDataQueryable as(String alias) {
         if (this._params.$select.size()>0) {
