@@ -14,6 +14,7 @@ public class ClientDataServiceParams {
     public Integer $skip;
     public Boolean $count = false;
     public final List<String> $orderby = new  ArrayList<String>();
+    public final List<String> $expand = new  ArrayList<String>();
     public final List<FieldExpression> $groupby = new ArrayList<FieldExpression>();
 
     public ClientDataServiceParams() {
@@ -34,6 +35,9 @@ public class ClientDataServiceParams {
         }
         if (this.$groupby.size()>0) {
             res.put("$groupby", StringUtils.join(this.$groupby, ","));
+        }
+        if (this.$expand.size()>0) {
+            res.put("$expand", StringUtils.join(this.$expand, ","));
         }
         if (this.$top>0 || this.$top==-1) {
             res.put("$top", this.$top.toString());
