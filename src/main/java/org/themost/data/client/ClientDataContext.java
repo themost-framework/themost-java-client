@@ -55,7 +55,15 @@ public class ClientDataContext {
      */
     public ClientDataModel model(Class<?> type) {
 
-        return new ClientDataModel(type.getName());
+        ClientDataModel result;
+        EdmEntitySetProperty annotation = type.getAnnotation(EdmEntitySetProperty.class);
+        if (annotation != null) {
+            result = new ClientDataModel(annotation.name());
+        } else {
+            result = new ClientDataModel(type.getName());
+        }
+        result.context = this;
+        return result;
     }
 
     /**

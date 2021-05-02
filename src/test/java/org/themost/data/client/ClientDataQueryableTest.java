@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +47,17 @@ public class ClientDataQueryableTest {
         assertTrue(result instanceof ArrayNode);
         ArrayNode items = (ArrayNode)result;
         items.forEach(item -> assertEquals(item.get("category").asText(), "Laptops"));
+    }
+
+    @Test
+    public void ShouldGetTypedItems() throws IOException, URISyntaxException {
+        List<Product> items = this.context.model("Products")
+                .where("category").equal("Laptops")
+                .orderBy("price")
+                .take(5)
+                .getItems(Product.class);
+        assertNotNull(items);
+        items.forEach(item -> assertEquals(item.category, "Laptops"));
     }
 
     @Test
@@ -139,6 +151,14 @@ public class ClientDataQueryableTest {
                 .getItem();
         JsonNode item = (JsonNode)result;
         assertNotNull(item);
+    }
+
+    @Test
+    public void ShouldUseGetTypedItem() throws IOException, URISyntaxException {
+        Product result = context.model("Products")
+                .where("name").equal("Google Chromebook Pixel")
+                .getItem(Product.class);
+        assertNotNull(result);
     }
 
     @Test
@@ -439,6 +459,14 @@ public class ClientDataQueryableTest {
             assertNotNull(item.get("customer"));
             assertNotNull(item.get("customer").get("jobTitle").asText());
         }
+    }
+
+    @Test
+    public void ShouldUseClass() throws IOException, URISyntaxException {
+        Product result = context.model(Product.class)
+                .where("name").equal("Google Chromebook Pixel")
+                .getItem(Product.class);
+        assertNotNull(result);
     }
 
 
