@@ -78,10 +78,13 @@ public class ClientDataQueryable {
     }
 
     public <T> T getItem(Class<T> type) throws URISyntaxException, IOException {
-        JsonNode node = (JsonNode)this.getItem();
+        JsonNode item = (JsonNode)this.getItem();
+        if (item == null) {
+            return null;
+        }
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
-        return mapper.treeToValue(node, type);
+        return mapper.treeToValue(item, type);
     }
 
     public Object getItems() throws URISyntaxException, IOException {
