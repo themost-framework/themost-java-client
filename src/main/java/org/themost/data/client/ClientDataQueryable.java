@@ -1,14 +1,17 @@
 package org.themost.data.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -74,6 +77,13 @@ public class ClientDataQueryable {
         throw new InvalidObjectException("Invalid response. Expected object.");
     }
 
+    public <T> T getItem(Class<T> type) throws URISyntaxException, IOException {
+        JsonNode node = (JsonNode)this.getItem();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+        return mapper.treeToValue(node, type);
+    }
+
     public Object getItems() throws URISyntaxException, IOException {
         HashMap<String, Object> queryParams = this._params.toHashMap();
         JsonNode node = (JsonNode)this._service.get(
@@ -94,6 +104,17 @@ public class ClientDataQueryable {
             }
         }
         throw new InvalidObjectException("Invalid response. Expected an array.");
+    }
+
+    public <T> List<T> getItems(Class<T> type) throws URISyntaxException, IOException {
+        ArrayNode node = (ArrayNode)this.getItems();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+        ArrayList<T> result = new ArrayList<>();
+        for (JsonNode jsonNode : node) {
+            result.add(mapper.treeToValue(jsonNode, type));
+        }
+        return result;
     }
 
     public Object getList() throws URISyntaxException, IOException {
